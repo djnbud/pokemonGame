@@ -111,7 +111,8 @@ const renderables = [background, ...boundaries, player];
 const battle = {
     initiated: false,
 };
-animate();
+//animate();
+animateBattle();
 let lastKey = "";
 window.addEventListener("keydown", (e) => {
     switch (e.key) {

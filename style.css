@@ -1,7 +1,18 @@
+
+*{font-family: 'Press Start 2P', cursive;
+}
 body{
     background-color: black;
 }
 
+h1 {
+    font-size: 16px;
+    margin: 0;
+}
+button {border: 0; cursor: pointer;font-size: 16px}
+button:hover {
+    background-color: #ddd;
+}
 .transition{
     background-color: black;
             position: absolute;

@@ -1,9 +1,39 @@
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <div style="display: inline-block; position: relative">
     <div id="overlappingDiv" class="transition"></div>
     <canvas></canvas>
+    <div
+        style="
+            background-color: white;
+            height: 140px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 4px black solid;
+            display: flex;
+        "
+    >
+        <div style="width: 66.66%; display: grid; grid-template-columns: repeat(2, 1fr)">
+            <button>Attack1</button><button>Attack2</button><button>Attack3</button><button>Attack4</button>
+        </div>
+        <div
+            style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 33.33%;
+                border-left: 4px black solid;
+            "
+        >
+            <h1>Attack Type</h1>
+        </div>
+    </div>
 </div>
 <script
     src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
@@ -14,7 +44,7 @@
 <script src="data/battleZones.js"></script>
 <script src="data/collisions.js"></script>
 <script src="utils.js"></script>
-<script src="animate.js"></script>
 <script src="sprite.js"></script>
+<script src="animate.js"></script>
 <script src="boundary.js"></script>
 <script src="index.js"></script>

@@ -38,10 +38,18 @@ function animate() {
                     yoyo: true,
                     duration: 0.4,
                     onComplete() {
-                        gsap.to("#overlappingDiv", { opacity: 1, duration: 0.4 });
-
-                        //activate a new animation loop
-                        animateBattle();
+                        gsap.to("#overlappingDiv", {
+                            opacity: 1,
+                            duration: 0.4,
+                            onComplete() {
+                                //activate a new animation loop
+                                animateBattle();
+                                gsap.to("#overlappingDiv", {
+                                    opacity: 0,
+                                    duration: 0.4,
+                                });
+                            },
+                        });
                     },
                 });
                 break;
@@ -173,7 +181,37 @@ function animate() {
         }
     }
 }
+const battleBackgroundImage = new Image();
+battleBackgroundImage.src = "./assets/battleBackground.png";
+const battleBackground = new Sprite({
+    position: { x: 0, y: 0 },
+    image: battleBackgroundImage,
+});
+
+/*Temporary force specific pokemon */
+const draggleImage = new Image();
+draggleImage.src = "./assets/draggleSprite.png";
+const draggle = new Sprite({
+    position: { x: 800, y: 100 },
+    image: draggleImage,
+    frames: { max: 4, hold: 30 },
+    animate: true,
+});
+
+const embyImage = new Image();
+embyImage.src = "./assets/embySprite.png";
+const emby = new Sprite({
+    position: { x: 280, y: 325 },
+    image: embyImage,
+    frames: { max: 4, hold: 30 },
+    animate: true,
+});
+
+battleBackgroundImage.src = "./assets/battleBackground.png";
 
 function animateBattle() {
     window.requestAnimationFrame(animateBattle);
+    battleBackground.draw();
+    draggle.draw();
+    emby.draw();
 }
