@@ -51,6 +51,7 @@ function initBattle() {
                                 opacity: 0,
                             });
                             battle.initiated = false;
+                            audio.battle.stop();
                             audio.Map.play();
                         },
                     });
@@ -78,6 +79,7 @@ function initBattle() {
                                     opacity: 0,
                                 });
                                 battle.initiated = false;
+                                audio.battle.stop();
                                 audio.Map.play();
                             },
                         });
