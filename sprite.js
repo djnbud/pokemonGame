@@ -33,6 +33,7 @@ class Sprite {
 
     draw() {
         c.save();
+        //c.translate is needed to convert the roation for canvas so its all relative
         c.translate(this.position.x + this.width / 2, this.position.y + this.height / 2);
         c.rotate(this.rotation);
         c.translate(-this.position.x - this.width / 2, -this.position.y - this.height / 2);

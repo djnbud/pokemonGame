@@ -1,5 +1,6 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
+
 canvas.width = 1024;
 canvas.height = 576;
 
@@ -54,6 +55,9 @@ c.fillRect(0, 0, canvas.width, canvas.height);
 const map = new Image();
 map.src = "./assets/PelletTown.png";
 
+const foregroundImage = new Image();
+foregroundImage.src = "./assets/foreground.png";
+
 const playerDownImage = new Image();
 playerDownImage.src = "./assets/player/playerDown.png";
 
@@ -91,6 +95,15 @@ const background = new Sprite({
     },
     image: map,
 });
+
+const foreground = new Sprite({
+    position: {
+        x: offset.x,
+        y: offset.y,
+    },
+    image: foregroundImage,
+});
+
 const keys = {
     w: {
         pressed: false,
@@ -106,13 +119,13 @@ const keys = {
     },
 };
 
-const movables = [background, ...boundaries, ...battleZones];
-const renderables = [background, ...boundaries, player];
+const movables = [background, ...boundaries, foreground, ...battleZones];
+const renderables = [background, ...boundaries, player, foreground];
 const battle = {
     initiated: false,
 };
-//animate();
-animateBattle();
+animate();
+
 let lastKey = "";
 window.addEventListener("keydown", (e) => {
     switch (e.key) {
@@ -149,5 +162,12 @@ window.addEventListener("keyup", (e) => {
         case "d":
             keys.d.pressed = false;
             break;
+    }
+});
+let clicked = false;
+addEventListener("click", () => {
+    if (!clicked) {
+        audio.Map.play();
+        clicked = true;
     }
 });

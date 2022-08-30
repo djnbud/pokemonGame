@@ -31,6 +31,9 @@ function animate() {
                 console.log("BATTLE!");
                 //deactivate current animation loop
                 window.cancelAnimationFrame(animationId);
+                audio.Map.stop();
+                audio.initBattle.play();
+                audio.battle.play();
                 battle.initiated = true;
                 gsap.to("#overlappingDiv", {
                     opacity: 1,
@@ -43,6 +46,7 @@ function animate() {
                             duration: 0.4,
                             onComplete() {
                                 //activate a new animation loop
+                                initBattle();
                                 animateBattle();
                                 gsap.to("#overlappingDiv", {
                                     opacity: 0,
@@ -180,38 +184,4 @@ function animate() {
             player.frames.val = 0;
         }
     }
-}
-const battleBackgroundImage = new Image();
-battleBackgroundImage.src = "./assets/battleBackground.png";
-const battleBackground = new Sprite({
-    position: { x: 0, y: 0 },
-    image: battleBackgroundImage,
-});
-
-/*Temporary force specific pokemon */
-const draggleImage = new Image();
-draggleImage.src = "./assets/draggleSprite.png";
-const draggle = new Sprite({
-    position: { x: 800, y: 100 },
-    image: draggleImage,
-    frames: { max: 4, hold: 30 },
-    animate: true,
-});
-
-const embyImage = new Image();
-embyImage.src = "./assets/embySprite.png";
-const emby = new Sprite({
-    position: { x: 280, y: 325 },
-    image: embyImage,
-    frames: { max: 4, hold: 30 },
-    animate: true,
-});
-
-battleBackgroundImage.src = "./assets/battleBackground.png";
-
-function animateBattle() {
-    window.requestAnimationFrame(animateBattle);
-    battleBackground.draw();
-    draggle.draw();
-    emby.draw();
 }
