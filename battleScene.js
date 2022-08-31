@@ -32,40 +32,43 @@ function initBattle() {
     //event listeners for buttons
     document.querySelectorAll("button").forEach((button) => {
         button.addEventListener("click", (e) => {
-            const selectedAttack = attacks[e.currentTarget.innerHTML];
-            emby.attack({ attack: selectedAttack, recipient: draggle, renderedSprites: renderedSprites });
-
-            if (draggle.health <= 0) {
-                queue.push(() => {
-                    draggle.faint();
-                });
-                queue.push(() => {
-                    //fade back to black
-                    gsap.to("#overlappingDiv", {
-                        opacity: 1,
-                        onComplete: () => {
-                            cancelAnimationFrame(battleAnimationId);
-                            animate();
-                            document.querySelector("#userInterface").style.display = "none";
-                            gsap.to("#overlappingDiv", {
-                                opacity: 0,
-                            });
-                            battle.initiated = false;
-                            audio.battle.stop();
-                            audio.Map.play();
-                        },
-                    });
-                });
-            }
-
-            //enemy attacks
-            const randomAttack = draggle.attacks[Math.floor(Math.random() * draggle.attacks.length)];
-
-            queue.push(() => {
-                draggle.attack({ attack: randomAttack, recipient: emby, renderedSprites: renderedSprites });
-                if (emby.health <= 0) {
+            if (e.currentTarget.id === "runAway") {
+                if (emby.runAwayAttempt()) {
                     queue.push(() => {
-                        emby.faint();
+                        document.querySelector("#dialogueBox").style.display = "block";
+                        document.querySelector("#dialogueBox").innerHTML = emby.name + " successfully escaped";
+                    });
+                    queue.push(() => {
+                        //fade back to black
+                        gsap.to("#overlappingDiv", {
+                            opacity: 1,
+                            onComplete: () => {
+                                cancelAnimationFrame(battleAnimationId);
+                                animate();
+                                document.querySelector("#userInterface").style.display = "none";
+                                gsap.to("#overlappingDiv", {
+                                    opacity: 0,
+                                });
+                                battle.initiated = false;
+                                audio.battle.stop();
+                                audio.Map.play();
+                            },
+                        });
+                    });
+                } else {
+                    queue.push(() => {
+                        document.querySelector("#dialogueBox").style.display = "block";
+                        document.querySelector("#dialogueBox").innerHTML = emby.name + " failed to escape";
+                    });
+                    enemyAttacks();
+                }
+            } else {
+                const selectedAttack = attacks[e.currentTarget.innerHTML];
+                emby.attack({ attack: selectedAttack, recipient: draggle, renderedSprites: renderedSprites });
+
+                if (draggle.health <= 0) {
+                    queue.push(() => {
+                        draggle.faint();
                     });
                     queue.push(() => {
                         //fade back to black
@@ -85,13 +88,48 @@ function initBattle() {
                         });
                     });
                 }
-            });
+
+                enemyAttacks();
+            }
         });
         button.addEventListener("mouseenter", (e) => {
-            const selectedAttack = attacks[e.currentTarget.innerHTML];
-            document.querySelector("#attackType").innerHTML = selectedAttack.type;
-            document.querySelector("#attackType").style.color = selectedAttack.color;
+            if (!e.currentTarget.id === "runAway") {
+                const selectedAttack = attacks[e.currentTarget.innerHTML];
+                document.querySelector("#attackType").innerHTML = selectedAttack.type;
+                document.querySelector("#attackType").style.color = selectedAttack.color;
+            }
         });
+    });
+}
+
+function enemyAttacks() {
+    //enemy attacks
+    const randomAttack = draggle.attacks[Math.floor(Math.random() * draggle.attacks.length)];
+
+    queue.push(() => {
+        draggle.attack({ attack: randomAttack, recipient: emby, renderedSprites: renderedSprites });
+        if (emby.health <= 0) {
+            queue.push(() => {
+                emby.faint();
+            });
+            queue.push(() => {
+                //fade back to black
+                gsap.to("#overlappingDiv", {
+                    opacity: 1,
+                    onComplete: () => {
+                        cancelAnimationFrame(battleAnimationId);
+                        animate();
+                        document.querySelector("#userInterface").style.display = "none";
+                        gsap.to("#overlappingDiv", {
+                            opacity: 0,
+                        });
+                        battle.initiated = false;
+                        audio.battle.stop();
+                        audio.Map.play();
+                    },
+                });
+            });
+        }
     });
 }
 

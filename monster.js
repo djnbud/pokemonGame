@@ -15,12 +15,14 @@ class Monster extends Sprite {
         isEnemy = false,
         name,
         attacks,
+        runawayChance = 10,
     }) {
         super({ position, image, frames, sprites, animate, rotation, scale, velocity, direction });
         this.health = 100;
         this.isEnemy = isEnemy;
         this.name = name;
         this.attacks = attacks;
+        this.runawayChance = runawayChance;
     }
 
     faint() {
@@ -33,10 +35,20 @@ class Monster extends Sprite {
         audio.victory.play();
     }
 
+    runAwayAttempt() {
+        document.querySelector("#dialogueBox").style.display = "block";
+        document.querySelector("#dialogueBox").innerHTML = this.name + " are attempting to run away...";
+
+        const runawayCheck = Math.floor(Math.random() * this.runawayChance);
+        return runawayCheck > 5;
+    }
+
     attack({ attack, recipient, renderedSprites }) {
         document.querySelector("#dialogueBox").style.display = "block";
         document.querySelector("#dialogueBox").innerHTML = this.name + " used " + attack.name;
         let healthBar = "#EnemyHealthBar";
+        const tl = gsap.timeline();
+        let movementDistance;
         if (this.isEnemy) {
             healthBar = "#PlayerHealthBar";
         }
@@ -79,9 +91,7 @@ class Monster extends Sprite {
                 });
                 break;
             case "Tackle":
-                const tl = gsap.timeline();
-
-                let movementDistance = 20;
+                movementDistance = 20;
                 if (this.isEnemy) {
                     movementDistance = -20;
                 }
