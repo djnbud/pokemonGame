@@ -16,8 +16,24 @@ let queue;
 function initBattle() {
     document.querySelector("#userInterface").style.display = "block";
     document.querySelector("#dialogueBox").style.display = "none";
+    document.querySelector("#inventoryBox").style.display = "none";
     document.querySelector("#enemyHealthBar").style.width = "100%";
     document.querySelector("#playerHealthBar").style.width = "100%";
+    let pokeballs = getPokeballs();
+    pokeballs.forEach((value, key) => {
+        const button = document.createElement("button");
+        button.innerHTML = key;
+        document.querySelector("#pokeballsBox").append(button);
+
+        const pokeballAmount = document.createElement("h1");
+        pokeballAmount.innerHTML = value.amount;
+        document.querySelector("#pokeballsBox").append(pokeballAmount);
+    });
+    const button = document.createElement("button");
+    button.innerHTML = "Back";
+    button.id = "pokeballsBack";
+    document.querySelector("#pokeballsBox").append(button);
+
     document.querySelector("#attacksBox").replaceChildren();
     draggle = new Monster(monsters.Draggle);
     emby = new Monster(monsters.Emby);
@@ -32,6 +48,10 @@ function initBattle() {
     //event listeners for buttons
     document.querySelectorAll("button").forEach((button) => {
         button.addEventListener("click", (e) => {
+            /*Was working on pokeballs and will need a check here to look for anything that isnt an
+            pokemon attack
+            */
+
             if (e.currentTarget.id === "runAway") {
                 if (emby.runAwayAttempt()) {
                     queue.push(() => {
@@ -151,4 +171,19 @@ document.querySelector("#dialogueBox").addEventListener("click", (e) => {
     } else {
         e.currentTarget.style.display = "none";
     }
+});
+
+document.querySelector("#inventory").addEventListener("click", (e) => {
+    document.querySelector("#userInterface").style.display = "none";
+    document.querySelector("#inventoryBox").style.display = "block";
+});
+
+document.querySelector("#backInv").addEventListener("click", (e) => {
+    document.querySelector("#userInterface").style.display = "block";
+    document.querySelector("#inventoryBox").style.display = "none";
+});
+
+document.querySelector("#pokeballs").addEventListener("click", (e) => {
+    document.querySelector("#pokeballsBox").style.display = "block";
+    document.querySelector("#inventoryBox").style.display = "none";
 });

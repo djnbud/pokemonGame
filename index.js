@@ -124,6 +124,7 @@ const renderables = [background, ...boundaries, player, foreground];
 const battle = {
     initiated: false,
 };
+initInventory();
 animate();
 
 let lastKey = "";
