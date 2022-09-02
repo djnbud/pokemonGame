@@ -42,7 +42,7 @@ function initBattle() {
     document.querySelector("#pokeballsBox").append(button);
     document.querySelector("#pokeballsBack").addEventListener("click", (e) => {
         document.querySelector("#pokeballsUI").style.visibility = "hidden";
-        document.querySelector("#inventoryUI").style.display = "block";
+        document.querySelector("#inventoryUI").style.visibility = "visible";
     });
 
     document.querySelector("#attacksBox").replaceChildren();
