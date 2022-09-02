@@ -95,6 +95,14 @@ function enemyAttacks() {
     });
 }
 
+function prepareBattle() {
+    //get players first pokemon
+    let playerPokemonDetails = getLocalStoredPokemon().get(0);
+    playerPokemon = new Monster(monsters[playerPokemonDetails.id]);
+    //this will be part of picking a random enemy pokemon or at least set it from given pokemon
+    let enemyPokemon = animateBattle();
+}
+
 function animateBattle() {
     battleAnimationId = window.requestAnimationFrame(animateBattle);
     battleBackground.draw();
