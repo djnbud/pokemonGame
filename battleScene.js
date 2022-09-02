@@ -48,20 +48,11 @@ function initBattle() {
         document.querySelector("#inventoryUI").style.visibility = "visible";
     });
 
-    document.querySelector("#attacksBox").replaceChildren();
     draggle = new Monster(monsters.Draggle);
     emby = new Monster(monsters.Emby);
     renderedSprites = [draggle, emby];
     queue = [];
     count = 0;
-    emby.attacks.forEach((attack) => {
-        const button = document.createElement("button");
-        button.id = "pokemonAttackBtn" + count;
-        button.innerHTML = attack.name;
-        document.querySelector("#attacksBox").append(button);
-        addAttackQuery("#pokemonAttackBtn" + count);
-        count++;
-    });
 }
 
 function enemyAttacks() {
@@ -99,8 +90,18 @@ function prepareBattle() {
     //get players first pokemon
     let playerPokemonDetails = getLocalStoredPokemon().get(0);
     playerPokemon = new Monster(monsters[playerPokemonDetails.id]);
+    document.querySelector("#attacksBox").replaceChildren();
+    emby.attacks.forEach((attack) => {
+        const button = document.createElement("button");
+        button.id = "pokemonAttackBtn" + count;
+        button.innerHTML = attack.name;
+        document.querySelector("#attacksBox").append(button);
+        addAttackQuery("#pokemonAttackBtn" + count);
+        count++;
+    });
     //this will be part of picking a random enemy pokemon or at least set it from given pokemon
-    let enemyPokemon = animateBattle();
+    enemyPokemon = new Monster(monsters.Emby);
+    animateBattle();
 }
 
 function animateBattle() {
