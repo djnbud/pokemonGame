@@ -16,6 +16,7 @@ class Monster extends Sprite {
         name,
         attacks,
         runawayChance = 10,
+        catchChance = 10,
     }) {
         super({ position, image, frames, sprites, animate, rotation, scale, velocity, direction });
         this.health = 100;
@@ -23,6 +24,7 @@ class Monster extends Sprite {
         this.name = name;
         this.attacks = attacks;
         this.runawayChance = runawayChance;
+        this.catchChance = catchChance;
     }
 
     faint() {
@@ -41,6 +43,11 @@ class Monster extends Sprite {
 
         const runawayCheck = Math.floor(Math.random() * this.runawayChance);
         return runawayCheck > 5;
+    }
+
+    catchAttempt() {
+        const catchCheck = Math.floor(Math.random() * this.catchChance);
+        return catchCheck > 5;
     }
 
     attack({ attack, recipient, renderedSprites }) {

@@ -16,109 +16,48 @@ let queue;
 function initBattle() {
     document.querySelector("#userInterface").style.display = "block";
     document.querySelector("#dialogueBox").style.display = "none";
-    document.querySelector("#inventoryBox").style.display = "none";
+    document.querySelector("#inventoryUI").style.visibility = "hidden";
+    document.querySelector("#pokeballsUI").style.visibility = "hidden";
     document.querySelector("#enemyHealthBar").style.width = "100%";
     document.querySelector("#playerHealthBar").style.width = "100%";
     let pokeballs = getPokeballs();
+    let count = 0;
     pokeballs.forEach((value, key) => {
         const button = document.createElement("button");
         button.innerHTML = key;
+        button.id = "pokeballBtn" + count;
         document.querySelector("#pokeballsBox").append(button);
+
+        addPokeballQuery("#pokeballBtn" + count);
 
         const pokeballAmount = document.createElement("h1");
         pokeballAmount.innerHTML = value.amount;
+        pokeballAmount.id = "pokeballAmount" + count;
         document.querySelector("#pokeballsBox").append(pokeballAmount);
+        count++;
     });
     const button = document.createElement("button");
     button.innerHTML = "Back";
     button.id = "pokeballsBack";
     document.querySelector("#pokeballsBox").append(button);
+    document.querySelector("#pokeballsBack").addEventListener("click", (e) => {
+        document.querySelector("#pokeballsUI").style.visibility = "hidden";
+        document.querySelector("#inventoryUI").style.display = "block";
+    });
 
     document.querySelector("#attacksBox").replaceChildren();
     draggle = new Monster(monsters.Draggle);
     emby = new Monster(monsters.Emby);
     renderedSprites = [draggle, emby];
     queue = [];
+    count = 0;
     emby.attacks.forEach((attack) => {
         const button = document.createElement("button");
+        button.id = "pokemonAttackBtn" + count;
         button.innerHTML = attack.name;
         document.querySelector("#attacksBox").append(button);
-    });
-
-    //event listeners for buttons
-    document.querySelectorAll("button").forEach((button) => {
-        button.addEventListener("click", (e) => {
-            /*Was working on pokeballs and will need a check here to look for anything that isnt an
-            pokemon attack
-            */
-
-            if (e.currentTarget.id === "runAway") {
-                if (emby.runAwayAttempt()) {
-                    queue.push(() => {
-                        document.querySelector("#dialogueBox").style.display = "block";
-                        document.querySelector("#dialogueBox").innerHTML = emby.name + " successfully escaped";
-                    });
-                    queue.push(() => {
-                        //fade back to black
-                        gsap.to("#overlappingDiv", {
-                            opacity: 1,
-                            onComplete: () => {
-                                cancelAnimationFrame(battleAnimationId);
-                                animate();
-                                document.querySelector("#userInterface").style.display = "none";
-                                gsap.to("#overlappingDiv", {
-                                    opacity: 0,
-                                });
-                                battle.initiated = false;
-                                audio.battle.stop();
-                                audio.Map.play();
-                            },
-                        });
-                    });
-                } else {
-                    queue.push(() => {
-                        document.querySelector("#dialogueBox").style.display = "block";
-                        document.querySelector("#dialogueBox").innerHTML = emby.name + " failed to escape";
-                    });
-                    enemyAttacks();
-                }
-            } else {
-                const selectedAttack = attacks[e.currentTarget.innerHTML];
-                emby.attack({ attack: selectedAttack, recipient: draggle, renderedSprites: renderedSprites });
-
-                if (draggle.health <= 0) {
-                    queue.push(() => {
-                        draggle.faint();
-                    });
-                    queue.push(() => {
-                        //fade back to black
-                        gsap.to("#overlappingDiv", {
-                            opacity: 1,
-                            onComplete: () => {
-                                cancelAnimationFrame(battleAnimationId);
-                                animate();
-                                document.querySelector("#userInterface").style.display = "none";
-                                gsap.to("#overlappingDiv", {
-                                    opacity: 0,
-                                });
-                                battle.initiated = false;
-                                audio.battle.stop();
-                                audio.Map.play();
-                            },
-                        });
-                    });
-                }
-
-                enemyAttacks();
-            }
-        });
-        button.addEventListener("mouseenter", (e) => {
-            if (!e.currentTarget.id === "runAway") {
-                const selectedAttack = attacks[e.currentTarget.innerHTML];
-                document.querySelector("#attackType").innerHTML = selectedAttack.type;
-                document.querySelector("#attackType").style.color = selectedAttack.color;
-            }
-        });
+        addAttackQuery("#pokemonAttackBtn" + count);
+        count++;
     });
 }
 
@@ -160,6 +99,124 @@ function animateBattle() {
     renderedSprites.forEach((sprite) => {
         sprite.draw();
     });
+
+    document.querySelector("#runAway").addEventListener("click", (e) => {
+        if (emby.runAwayAttempt()) {
+            queue.push(() => {
+                document.querySelector("#dialogueBox").style.display = "block";
+                document.querySelector("#dialogueBox").innerHTML = emby.name + " successfully escaped";
+            });
+            queue.push(() => {
+                //fade back to black
+                gsap.to("#overlappingDiv", {
+                    opacity: 1,
+                    onComplete: () => {
+                        cancelAnimationFrame(battleAnimationId);
+                        animate();
+                        document.querySelector("#userInterface").style.display = "none";
+                        gsap.to("#overlappingDiv", {
+                            opacity: 0,
+                        });
+                        battle.initiated = false;
+                        audio.battle.stop();
+                        audio.Map.play();
+                    },
+                });
+            });
+        } else {
+            queue.push(() => {
+                document.querySelector("#dialogueBox").style.display = "block";
+                document.querySelector("#dialogueBox").innerHTML = emby.name + " failed to escape";
+            });
+            enemyAttacks();
+        }
+    });
+}
+
+function addAttackQuery(id) {
+    document.querySelector(id).addEventListener("click", (e) => {
+        const selectedAttack = attacks[e.currentTarget.innerHTML];
+        emby.attack({ attack: selectedAttack, recipient: draggle, renderedSprites: renderedSprites });
+
+        if (draggle.health <= 0) {
+            queue.push(() => {
+                draggle.faint();
+            });
+            queue.push(() => {
+                //fade back to black
+                gsap.to("#overlappingDiv", {
+                    opacity: 1,
+                    onComplete: () => {
+                        cancelAnimationFrame(battleAnimationId);
+                        animate();
+                        document.querySelector("#userInterface").style.display = "none";
+                        gsap.to("#overlappingDiv", {
+                            opacity: 0,
+                        });
+                        battle.initiated = false;
+                        audio.battle.stop();
+                        audio.Map.play();
+                    },
+                });
+            });
+        }
+
+        enemyAttacks();
+    });
+}
+
+function addPokeballQuery(id) {
+    document.querySelector(id).addEventListener("click", (e) => {
+        const pokeballImage = new Image();
+        pokeballImage.src = "./assets/pokeball.png";
+        const pokeball = new Sprite({
+            position: { x: emby.position.x, y: emby.position.y },
+            image: pokeballImage,
+            scale: 0.2,
+        });
+        renderedSprites.push(pokeball);
+        document.querySelector("#pokeballsUI").style.visibility = "hidden";
+        document.querySelector("#dialogueBox").style.display = "block";
+        document.querySelector("#dialogueBox").innerHTML = "You throw a Pokeball at " + draggle.name;
+        queue.push(() => {
+            gsap.to(pokeball.position, {
+                x: draggle.position.x,
+                y: draggle.position.y,
+                onComplete: () => {
+                    draggle.opacity = 0;
+                    if (draggle.catchAttempt()) {
+                        document.querySelector("#dialogueBox").innerHTML =
+                            "Congratualtions! You caught a " + draggle.name + "!";
+                        renderedSprites.pop();
+                        draggle.opacity = 1;
+                        queue.push(() => {
+                            //fade back to black
+                            gsap.to("#overlappingDiv", {
+                                opacity: 1,
+                                onComplete: () => {
+                                    cancelAnimationFrame(battleAnimationId);
+                                    animate();
+                                    document.querySelector("#userInterface").style.display = "none";
+                                    gsap.to("#overlappingDiv", {
+                                        opacity: 0,
+                                    });
+                                    battle.initiated = false;
+                                    audio.battle.stop();
+                                    audio.Map.play();
+                                },
+                            });
+                        });
+                    } else {
+                        document.querySelector("#dialogueBox").innerHTML =
+                            draggle.name + " managed to jump out the pokeball!";
+                        draggle.opacity = 1;
+                        renderedSprites.pop();
+                        enemyAttacks();
+                    }
+                },
+            });
+        });
+    });
 }
 //initBattle();
 //animateBattle();
@@ -174,16 +231,16 @@ document.querySelector("#dialogueBox").addEventListener("click", (e) => {
 });
 
 document.querySelector("#inventory").addEventListener("click", (e) => {
-    document.querySelector("#userInterface").style.display = "none";
-    document.querySelector("#inventoryBox").style.display = "block";
+    //document.querySelector("#firstUI").style.display = "none";
+    document.querySelector("#inventoryUI").style.visibility = "visible";
 });
 
 document.querySelector("#backInv").addEventListener("click", (e) => {
-    document.querySelector("#userInterface").style.display = "block";
-    document.querySelector("#inventoryBox").style.display = "none";
+    //document.querySelector("#firstUI").style.display = "block";
+    document.querySelector("#inventoryUI").style.visibility = "hidden";
 });
 
 document.querySelector("#pokeballs").addEventListener("click", (e) => {
-    document.querySelector("#pokeballsBox").style.display = "block";
-    document.querySelector("#inventoryBox").style.display = "none";
+    document.querySelector("#pokeballsUI").style.visibility = "visible";
+    document.querySelector("#inventoryUI").style.visibility = "hidden";
 });

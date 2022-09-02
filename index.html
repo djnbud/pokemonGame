@@ -65,22 +65,21 @@
                 display: flex;
             "
         >
-            <div
-                id="dialogueBox"
-                style="
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                    background-color: white;
-                    padding: 12px;
-                    display: none;
-                    cursor: pointer;
-                "
-            >
-                fgsdgf
-            </div>
+            fgsdgf
+        </div>
+        <div
+            id="firstUI"
+            style="
+                background-color: white;
+                height: 140px;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-top: 4px black solid;
+                display: flex;
+            "
+        >
             <div id="attacksBox" style="width: 66.66%; display: grid; grid-template-columns: repeat(2, 1fr)"></div>
             <div id="rightUI" style="width: 33.33%; display: grid; grid-template-columns: repeat(2, 1fr)">
                 <div style="display: flex; align-items: center; justify-content: center; border-left: 4px black solid">
@@ -94,11 +93,31 @@
                 </button>
                 <button
                     id="inventory"
-                    style="display: flex; align-items: center; justify-content: center; border-left: 4px black solid"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-left: 4px black solid;
+                        border-right: 4px black solid;
+                    "
                 >
                     <h1>Inventory</h1>
                 </button>
             </div>
+        </div>
+        <div
+            id="inventoryUI"
+            style="
+                background-color: white;
+                height: 140px;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-top: 4px black solid;
+                display: flex;
+            "
+        >
             <div id="inventoryBox" style="width: 33.33%; display: grid; grid-template-columns: repeat(2, 1fr)">
                 <button
                     id="pokeballs"
@@ -119,8 +138,36 @@
                     <h1>Back</h1>
                 </button>
             </div>
-            <div id="pokeballsBox" style="width: 66.66%; display: grid; grid-template-columns: repeat(2, 1fr)"></div>
         </div>
+        <div
+            id="pokeballsUI"
+            style="
+                background-color: white;
+                height: 140px;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-top: 4px black solid;
+                display: flex;
+            "
+        >
+            <div id="pokeballsBox" style="display: grid; grid-template-columns: repeat(2, 1fr)"></div>
+        </div>
+        <div
+            id="dialogueBox"
+            style="
+                position: absolute;
+                top: 436;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background-color: white;
+                padding: 12px;
+                display: none;
+                cursor: pointer;
+            "
+        ></div>
     </div>
 </div>
 <script
