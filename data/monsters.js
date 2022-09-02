@@ -5,6 +5,8 @@ const monsters = {
         frames: { max: 4, hold: 30 },
         animate: true,
         name: "Emby",
+        level: 1,
+        experience: 0,
         attacks: [attacks.Tackle, attacks.Fireball],
     },
     Draggle: {
@@ -14,6 +16,8 @@ const monsters = {
         animate: true,
         isEnemy: true,
         name: "Draggle",
+        level: 1,
+        experience: 0,
         attacks: [attacks.Tackle, attacks.Fireball],
     },
 };

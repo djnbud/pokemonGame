@@ -13,7 +13,7 @@ function initInventory() {
         details: { level: 1, attacks: [attacks.Tackle, attacks.Fireball] },
         experience: 0,
     });
-    storedPokemon.set("localStorage", [localPokemon]);
+    storedPokemon.set("localStorage", localPokemon);
     storedPokemon.set("pcStorage", []);
 }
 
