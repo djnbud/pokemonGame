@@ -10,7 +10,15 @@ function animate() {
     let moving = true;
     player.animate = false;
 
-    if (battle.initiated) return;
+    if (battle.initiated || playerUI.open) return;
+
+    if (keys.i.pressed) {
+        playerUI.open = true;
+        window.cancelAnimationFrame(animationId);
+        document.querySelector("#playerUIContainer").style.display = "block";
+        initPlayerInv();
+    }
+
     //check for collision with a battleZone and activate a battle
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
         for (let i = 0; i < battleZones.length; i++) {

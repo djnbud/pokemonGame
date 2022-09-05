@@ -8,6 +8,87 @@
     <div id="overlappingDiv" class="transition"></div>
 
     <canvas></canvas>
+    <div id="playerUIContainer" style="display: none">
+        <div
+            style="
+                background-color: white;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: 0;
+                border-top: 4px black solid;
+                display: flex;
+            "
+        >
+            <div id="playerButtons" style="top: 0; bottom: 0; display: grid; grid-template-columns: repeat(1, 1fr)">
+                <button
+                    id="pokemonPlayerInv"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-left: 4px black solid;
+                        border-right: 4px black solid;
+                    "
+                >
+                    <h1>Pokemon Bag</h1>
+                </button>
+                <button
+                    id="pokemonStoragePlayerInv"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-left: 4px black solid;
+                        border-right: 4px black solid;
+                        border-top: 4px black solid;
+                    "
+                >
+                    <h1>Pokemon Storage</h1>
+                </button>
+                <button
+                    id="pokedexPlayerInv"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-left: 4px black solid;
+                        border-right: 4px black solid;
+                        border-top: 4px black solid;
+                    "
+                >
+                    <h1>Pokedex</h1>
+                </button>
+                <button
+                    id="itemsPlayerInv"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-left: 4px black solid;
+                        border-right: 4px black solid;
+                        border-top: 4px black solid;
+                    "
+                >
+                    <h1>Items</h1>
+                </button>
+                <button
+                    id="closePlayerInv"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-left: 4px black solid;
+                        border-right: 4px black solid;
+                        border-top: 4px black solid;
+                    "
+                >
+                    <h1>Close Bag</h1>
+                </button>
+            </div>
+        </div>
+    </div>
     <div id="userInterface" style="display: none">
         <!-- Health Bar of Enemy Pokemon-->
         <div
@@ -64,9 +145,7 @@
                 border-top: 4px black solid;
                 display: flex;
             "
-        >
-            fgsdgf
-        </div>
+        ></div>
         <div
             id="firstUI"
             style="
@@ -196,5 +275,6 @@
 <script src="animate.js"></script>
 <script src="boundary.js"></script>
 <script src="inventory.js"></script>
+<script src="playerInventoryUI.js"></script>
 <script src="index.js"></script>
 <script src="battleScene.js"></script>

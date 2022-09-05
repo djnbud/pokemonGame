@@ -117,12 +117,18 @@ const keys = {
     d: {
         pressed: false,
     },
+    i: {
+        pressed: false,
+    },
 };
 
 const movables = [background, ...boundaries, foreground, ...battleZones];
 const renderables = [background, ...boundaries, player, foreground];
 const battle = {
     initiated: false,
+};
+const playerUI = {
+    open: false,
 };
 initInventory();
 animate();
@@ -146,6 +152,10 @@ window.addEventListener("keydown", (e) => {
             keys.d.pressed = true;
             lastKey = "d";
             break;
+        case "i":
+            keys.i.pressed = true;
+            lastKey = "d";
+            break;
     }
 });
 
@@ -162,6 +172,9 @@ window.addEventListener("keyup", (e) => {
             break;
         case "d":
             keys.d.pressed = false;
+            break;
+        case "i":
+            keys.i.pressed = false;
             break;
     }
 });
