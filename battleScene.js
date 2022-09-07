@@ -88,7 +88,8 @@ function prepareBattle() {
     });
     //this will be part of picking a random enemy pokemon or at least set it from given pokemon
     enemyPokemon = new Monster(monsters.Draggle);
-
+    document.querySelector("#enemyPokemonName").innerHTML = monsters.Draggle.name;
+    document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
     renderedSprites = [enemyPokemon, playerPokemon];
     animateBattle();
 }
@@ -139,6 +140,12 @@ function addAttackQuery(id) {
         }
 
         enemyAttacks();
+    });
+
+    document.querySelector(id).addEventListener("mouseenter", (e) => {
+        const selectedAttack = attacks[e.currentTarget.innerHTML];
+        document.querySelector("#attackType").innerHTML = selectedAttack.type;
+        document.querySelector("#attackType").style.color = selectedAttack.color;
     });
 }
 

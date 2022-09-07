@@ -21,7 +21,10 @@
                 display: flex;
             "
         >
-            <div id="playerButtons" style="top: 0; bottom: 0; display: grid; grid-template-columns: repeat(1, 1fr)">
+            <div
+                id="playerButtons"
+                style="top: 0; bottom: 0; display: grid; grid-template-columns: repeat(1, 1fr); width: 25%"
+            >
                 <button
                     id="pokemonPlayerInv"
                     style="
@@ -87,6 +90,10 @@
                     <h1>Close Bag</h1>
                 </button>
             </div>
+            <div
+                id="pokemonBagView"
+                style="top: 0; bottom: 0; display: grid; grid-template-columns: repeat(1, 1fr); width: 75%"
+            ></div>
         </div>
     </div>
     <div id="userInterface" style="display: none">
@@ -102,13 +109,17 @@
                 padding: 12px;
             "
         >
-            <h1>Draggle</h1>
-            <div style="position: relative">
-                <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
-                <div
-                    id="EnemyHealthBar"
-                    style="height: 5px; background-color: green; position: absolute; top: 0; left: 0; right: 0"
-                ></div>
+            <h1 id="enemyPokemonName"></h1>
+
+            <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <h1>HP</h1>
+                <div id="enemyHPContainer" style="position: relative; bottom: 5px">
+                    <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
+                    <div
+                        id="EnemyHealthBar"
+                        style="height: 5px; background-color: green; position: absolute; top: 10px; left: 0; right: 0"
+                    ></div>
+                </div>
             </div>
         </div>
 
@@ -124,13 +135,16 @@
                 padding: 12px;
             "
         >
-            <h1>Emby</h1>
-            <div style="position: relative">
-                <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
-                <div
-                    id="PlayerHealthBar"
-                    style="height: 5px; background-color: green; position: absolute; top: 0; left: 0; right: 0"
-                ></div>
+            <h1 id="playerPokemonName"></h1>
+            <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <h1>HP</h1>
+                <div id="playerHPContainer" style="position: relative; bottom: 5px">
+                    <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
+                    <div
+                        id="PlayerHealthBar"
+                        style="height: 5px; background-color: green; position: absolute; top: 10px; left: 0; right: 0"
+                    ></div>
+                </div>
             </div>
         </div>
 
@@ -165,22 +179,22 @@
                     <h1 id="attackType">Attack Type</h1>
                 </div>
                 <button
+                    id="pokemonBag"
+                    style="display: flex; align-items: center; justify-content: center; border-left: 4px black solid"
+                >
+                    <h1>Pokemon Bag</h1>
+                </button>
+                <button
+                    id="inventory"
+                    style="display: flex; align-items: center; justify-content: center; border-left: 4px black solid"
+                >
+                    <h1>Inventory</h1>
+                </button>
+                <button
                     id="runAway"
                     style="display: flex; align-items: center; justify-content: center; border-left: 4px black solid"
                 >
                     <h1>Run Away</h1>
-                </button>
-                <button
-                    id="inventory"
-                    style="
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-left: 4px black solid;
-                        border-right: 4px black solid;
-                    "
-                >
-                    <h1>Inventory</h1>
                 </button>
             </div>
         </div>

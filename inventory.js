@@ -49,7 +49,7 @@ function addPokemonToStorage(pokemon, nickname) {
     let localStorage = getLocalStoredPokemon();
     let pcStorage = getPcStoredPokemon();
     if (localStorage.size < 6) {
-        localStorage.set(localStorage.size + 1, {
+        localStorage.set(localStorage.size, {
             id: pokemon.name,
             nickname: nickname,
             details: { level: pokemon.level, attacks: pokemon.attacks, experience: pokemon.experience },
