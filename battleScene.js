@@ -76,7 +76,9 @@ function prepareBattle() {
     let localPoke = getLocalStoredPokemon(),
         playerPokemonDetails = localPoke.get(0),
         count = 0;
-    playerPokemon = new Monster(monsters[playerPokemonDetails.id]);
+    let playerPokemonSpec = monsters[playerPokemonDetails.id];
+    playerPokemonSpec.isEnemy = false;
+    playerPokemon = new Monster(playerPokemonSpec);
     document.querySelector("#attacksBox").replaceChildren();
     playerPokemonDetails.details.attacks.forEach((attack) => {
         const button = document.createElement("button");
@@ -87,7 +89,9 @@ function prepareBattle() {
         count++;
     });
     //this will be part of picking a random enemy pokemon or at least set it from given pokemon
-    enemyPokemon = new Monster(monsters.Draggle);
+    let enemyPokemonSpec = monsters.Draggle;
+    enemyPokemonSpec.isEnemy = true;
+    enemyPokemon = new Monster(enemyPokemonSpec);
     document.querySelector("#enemyPokemonName").innerHTML = monsters.Draggle.name;
     document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
     renderedSprites = [enemyPokemon, playerPokemon];

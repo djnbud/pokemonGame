@@ -1,6 +1,7 @@
 const monsters = {
     Emby: {
         position: { x: 280, y: 325 },
+        enemyPosition: { x: 800, y: 100 },
         image: { src: "./assets/embySprite.png" },
         frames: { max: 4, hold: 30 },
         animate: true,
@@ -10,7 +11,8 @@ const monsters = {
         attacks: [attacks.Tackle, attacks.Fireball],
     },
     Draggle: {
-        position: { x: 800, y: 100 },
+        position: { x: 280, y: 325 },
+        enemyPosition: { x: 800, y: 100 },
         image: { src: "./assets/draggleSprite.png" },
         frames: { max: 4, hold: 30 },
         animate: true,

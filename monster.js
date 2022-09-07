@@ -1,6 +1,7 @@
 class Monster extends Sprite {
     constructor({
         position,
+        enemyPosition,
         image,
         frames = {
             max: 1,
@@ -18,6 +19,9 @@ class Monster extends Sprite {
         runawayChance = 10,
         catchChance = 10,
     }) {
+        if (isEnemy === true) {
+            position = enemyPosition;
+        }
         super({ position, image, frames, sprites, animate, rotation, scale, velocity, direction });
         this.health = 100;
         this.isEnemy = isEnemy;

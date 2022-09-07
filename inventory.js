@@ -44,6 +44,11 @@ function getPcStoredPokemon() {
     return storedPokemon.get("pcStorage");
 }
 
+function setLocalPokemon(index, details) {
+    let localPokemon = storedPokemon.get("localStorage");
+    localPokemon.set(index, details);
+}
+
 function addPokemonToStorage(pokemon, nickname) {
     //when retrieved a new pokemon check if room in storage
     let localStorage = getLocalStoredPokemon();
