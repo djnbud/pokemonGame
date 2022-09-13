@@ -18,12 +18,15 @@ class Monster extends Sprite {
         attacks,
         runawayChance = 10,
         catchChance = 10,
+        health,
+        maxHealth,
     }) {
         if (isEnemy === true) {
             position = enemyPosition;
         }
         super({ position, image, frames, sprites, animate, rotation, scale, velocity, direction });
-        this.health = 100;
+        this.health = health;
+        this.maxHealth = maxHealth;
         this.isEnemy = isEnemy;
         this.name = name;
         this.attacks = attacks;

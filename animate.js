@@ -94,10 +94,12 @@ function animate() {
             }
         }
 
-        if (moving)
+        if (moving) {
             movables.forEach((movable) => {
                 movable.position.y += 3;
             });
+            distanceTravelled.y += 3;
+        }
     } else if (keys.a.pressed && lastKey === "a") {
         player.direction = "LEFT";
         player.animate = true;
@@ -121,10 +123,12 @@ function animate() {
                 break;
             }
         }
-        if (moving)
+        if (moving) {
             movables.forEach((movable) => {
                 movable.position.x += 3;
             });
+            distanceTravelled.x += 3;
+        }
     } else if (keys.s.pressed && lastKey === "s") {
         player.direction = "DOWN";
         player.animate = true;
@@ -148,10 +152,12 @@ function animate() {
                 break;
             }
         }
-        if (moving)
+        if (moving) {
             movables.forEach((movable) => {
                 movable.position.y -= 3;
             });
+            distanceTravelled.y -= 3;
+        }
     } else if (keys.d.pressed && lastKey === "d") {
         player.direction = "RIGHT";
         player.animate = true;
@@ -175,10 +181,12 @@ function animate() {
                 break;
             }
         }
-        if (moving)
+        if (moving) {
             movables.forEach((movable) => {
                 movable.position.x -= 3;
             });
+            distanceTravelled.x -= 3;
+        }
     } else if (
         keys.w.pressed === false &&
         keys.a.pressed === false &&

@@ -9,6 +9,7 @@ const battleBackground = new Sprite({
 
 let enemyPokemon;
 let playerPokemon;
+let currentSelectedPokemonIndex;
 let renderedSprites;
 let battleAnimationId;
 let queue;
@@ -60,25 +61,58 @@ function enemyAttacks() {
 
     queue.push(() => {
         enemyPokemon.attack({ attack: randomAttack, recipient: playerPokemon, renderedSprites: renderedSprites });
+        let localPoke = getLocalStoredPokemon(),
+            playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+        if (playerPokemon.health <= 0) {
+            playerPokemonDetails.details.health = 0;
+        } else {
+            playerPokemonDetails.details.health = playerPokemon.health;
+        }
+        setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
         if (playerPokemon.health <= 0) {
             queue.push(() => {
                 playerPokemon.faint();
             });
-            endBattle();
+
+            //if true then player has at least one pokemon with health > 0
+
+            if (checkAllLocalPokemonHealth()) {
+                //NEED TO MAKE IT SO PLAYER CAN SWITCH POKEMON BY ADDING BAG OPTION SO THIS POINT DISPLAY POKEMON BAG!
+                //MAKE SURE TO REMOVE END BATTLE FROM HERE TOO
+                endBattle();
+            } else {
+                //send player back to starting position or eventually last visited pokecentre with pokemon healed
+                movables.forEach((movable) => {
+                    movable.position.x -= distanceTravelled.x;
+                    movable.position.y -= distanceTravelled.y;
+                });
+                distanceTravelled.x = 0;
+                distanceTravelled.y = 0;
+                queue.push(() => {
+                    document.querySelector("#dialogueBox").innerHTML = "You have no Pokemon Left and have had to flee!";
+                });
+                healAllLocalPokemon();
+                endBattle();
+            }
         }
     });
 }
 
 function prepareBattle() {
+    currentSelectedPokemonIndex = 0;
     enemyPokemon = null;
     playerPokemon = null;
     //get players first pokemon
     let localPoke = getLocalStoredPokemon(),
-        playerPokemonDetails = localPoke.get(0),
+        playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex),
         count = 0;
     let playerPokemonSpec = monsters[playerPokemonDetails.id];
     playerPokemonSpec.isEnemy = false;
     playerPokemon = new Monster(playerPokemonSpec);
+    playerPokemon.health = playerPokemonDetails.details.health;
+    gsap.to("#PlayerHealthBar", {
+        width: playerPokemon.health + "%",
+    });
     document.querySelector("#attacksBox").replaceChildren();
     playerPokemonDetails.details.attacks.forEach((attack) => {
         const button = document.createElement("button");
@@ -115,8 +149,13 @@ function endBattle() {
             onComplete: () => {
                 enemyPokemon.opacity = 1;
                 cancelAnimationFrame(battleAnimationId);
+
                 animate();
+
                 document.querySelector("#userInterface").style.display = "none";
+                document.querySelector("#attackType").innerHTML = "Attack Type";
+                document.querySelector("#attackType").style.color = "Black";
+                document.querySelector("#attackDamage").innerHTML = "Attack Damage:";
                 gsap.to("#overlappingDiv", {
                     opacity: 0,
                 });
@@ -150,6 +189,7 @@ function addAttackQuery(id) {
         const selectedAttack = attacks[e.currentTarget.innerHTML];
         document.querySelector("#attackType").innerHTML = selectedAttack.type;
         document.querySelector("#attackType").style.color = selectedAttack.color;
+        document.querySelector("#attackDamage").innerHTML = "Attack Damage: " + selectedAttack.damage;
     });
 }
 

@@ -13,7 +13,7 @@ const battleZonesMap = [];
 for (let i = 0; i < battleZonesData.length; i += 70) {
     battleZonesMap.push(battleZonesData.slice(i, 70 + i));
 }
-
+const distanceTravelled = { x: 0, y: 0 };
 const boundaries = [];
 const offset = {
     x: -735,
