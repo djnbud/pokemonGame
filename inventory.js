@@ -50,11 +50,11 @@ function setLocalPokemon(index, details) {
 
 function checkAllLocalPokemonHealth() {
     let localPokemon = storedPokemon.get("localStorage");
-    localPokemon.forEach((value, key) => {
+    for (let [key, value] of localPokemon) {
         if (value.details.health > 0) {
             return true;
         }
-    });
+    }
     return false;
 }
 

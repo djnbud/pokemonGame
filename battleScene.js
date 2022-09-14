@@ -20,9 +20,18 @@ function initBattle() {
     document.querySelector("#dialogueBox").style.display = "none";
     document.querySelector("#inventoryUI").style.visibility = "hidden";
     document.querySelector("#pokeballsUI").style.visibility = "hidden";
+    document.querySelector("#pokemonBagUIBattle").style.visibility = "hidden";
     document.querySelector("#enemyHealthBar").style.width = "100%";
     document.querySelector("#playerHealthBar").style.width = "100%";
     waiting = false;
+
+    //draggle = new Monster(monsters.Draggle);
+    //emby = new Monster(monsters.Emby);
+    //renderedSprites = [draggle, emby];
+    queue = [];
+}
+
+function pokeballsInit() {
     let pokeballs = getPokeballs();
     let count = 0;
     document.querySelector("#pokeballsBox").replaceChildren();
@@ -48,11 +57,40 @@ function initBattle() {
         document.querySelector("#pokeballsUI").style.visibility = "hidden";
         document.querySelector("#inventoryUI").style.visibility = "visible";
     });
+}
 
-    //draggle = new Monster(monsters.Draggle);
-    //emby = new Monster(monsters.Emby);
-    //renderedSprites = [draggle, emby];
-    queue = [];
+function pokemonBagInit() {
+    let localPoke = getLocalStoredPokemon();
+    document.querySelector("#pokemonBattleBag").replaceChildren();
+
+    for (let i = 0; i < 6; i++) {
+        let currentPokemon = localPoke.get(i);
+        if (currentPokemon !== undefined) {
+            const button = document.createElement("button");
+            button.id = "pokemonBagBattleBtn" + i;
+            if (i === currentSelectedPokemonIndex) {
+                button.style.backgroundColor = "green";
+            }
+            button.innerHTML = currentPokemon.id;
+            document.querySelector("#pokemonBattleBag").append(button);
+            addPokemonBattleBagQuery("#" + button.id);
+        } else {
+            const button = document.createElement("button");
+            button.id = "pokemonBagBattleBtn" + i;
+            button.disabled = true;
+            //button.innerHTML = currentPokemon.id;
+            document.querySelector("#pokemonBattleBag").append(button);
+        }
+    }
+
+    const button = document.createElement("button");
+    button.innerHTML = "Back";
+    button.id = "pokemonBagBattleBack";
+    document.querySelector("#pokemonBattleBag").append(button);
+    document.querySelector("#pokemonBagBattleBack").addEventListener("click", (e) => {
+        document.querySelector("#pokemonBagUIBattle").style.visibility = "hidden";
+        document.querySelector("#inventoryUI").style.visibility = "visible";
+    });
 }
 
 function enemyAttacks() {
@@ -79,7 +117,9 @@ function enemyAttacks() {
             if (checkAllLocalPokemonHealth()) {
                 //NEED TO MAKE IT SO PLAYER CAN SWITCH POKEMON BY ADDING BAG OPTION SO THIS POINT DISPLAY POKEMON BAG!
                 //MAKE SURE TO REMOVE END BATTLE FROM HERE TOO
-                endBattle();
+                document.querySelector("#pokemonBagUIBattle").style.visibility = "visible";
+
+                document.querySelector("#pokemonBagBattleBack").disabled = true;
             } else {
                 //send player back to starting position or eventually last visited pokecentre with pokemon healed
                 movables.forEach((movable) => {
@@ -98,38 +138,45 @@ function enemyAttacks() {
     });
 }
 
-function prepareBattle() {
-    currentSelectedPokemonIndex = 0;
+function prepareBattle(pokeInd) {
+    currentSelectedPokemonIndex = pokeInd;
     enemyPokemon = null;
     playerPokemon = null;
     //get players first pokemon
     let localPoke = getLocalStoredPokemon(),
         playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex),
         count = 0;
-    let playerPokemonSpec = monsters[playerPokemonDetails.id];
-    playerPokemonSpec.isEnemy = false;
-    playerPokemon = new Monster(playerPokemonSpec);
-    playerPokemon.health = playerPokemonDetails.details.health;
-    gsap.to("#PlayerHealthBar", {
-        width: playerPokemon.health + "%",
-    });
-    document.querySelector("#attacksBox").replaceChildren();
-    playerPokemonDetails.details.attacks.forEach((attack) => {
-        const button = document.createElement("button");
-        button.id = "pokemonAttackBtn" + count;
-        button.innerHTML = attack.name;
-        document.querySelector("#attacksBox").append(button);
-        addAttackQuery("#pokemonAttackBtn" + count);
-        count++;
-    });
-    //this will be part of picking a random enemy pokemon or at least set it from given pokemon
-    let enemyPokemonSpec = monsters.Draggle;
-    enemyPokemonSpec.isEnemy = true;
-    enemyPokemon = new Monster(enemyPokemonSpec);
-    document.querySelector("#enemyPokemonName").innerHTML = monsters.Draggle.name;
-    document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
-    renderedSprites = [enemyPokemon, playerPokemon];
-    animateBattle();
+    if (playerPokemonDetails.details.health > 0) {
+        pokeballsInit();
+        pokemonBagInit();
+        let playerPokemonSpec = monsters[playerPokemonDetails.id];
+        playerPokemonSpec.isEnemy = false;
+        playerPokemon = new Monster(playerPokemonSpec);
+        playerPokemon.health = playerPokemonDetails.details.health;
+        gsap.to("#PlayerHealthBar", {
+            width: playerPokemon.health + "%",
+        });
+        document.querySelector("#attacksBox").replaceChildren();
+        playerPokemonDetails.details.attacks.forEach((attack) => {
+            const button = document.createElement("button");
+            button.id = "pokemonAttackBtn" + count;
+            button.innerHTML = attack.name;
+            document.querySelector("#attacksBox").append(button);
+            addAttackQuery("#pokemonAttackBtn" + count);
+            count++;
+        });
+        //this will be part of picking a random enemy pokemon or at least set it from given pokemon
+        let enemyPokemonSpec = monsters.Draggle;
+        enemyPokemonSpec.isEnemy = true;
+        enemyPokemon = new Monster(enemyPokemonSpec);
+        document.querySelector("#enemyPokemonName").innerHTML = monsters.Draggle.name;
+        document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
+        renderedSprites = [enemyPokemon, playerPokemon];
+        animateBattle();
+    } else {
+        currentSelectedPokemonIndex++;
+        prepareBattle(currentSelectedPokemonIndex);
+    }
 }
 
 function animateBattle() {
@@ -248,6 +295,44 @@ function addPokeballQuery(id) {
         }
     });
 }
+
+function addPokemonBattleBagQuery(id) {
+    document.querySelector(id).addEventListener("click", (e) => {
+        if (id !== "#pokemonBagBattleBtn" + currentSelectedPokemonIndex) {
+            let pokeIndex = parseInt(id.split("#pokemonBagBattleBtn")[1]);
+            let localPoke = getLocalStoredPokemon(),
+                playerPokemonDetails = localPoke.get(pokeIndex);
+            if (playerPokemonDetails.details.health > 0) {
+                document.querySelector("#pokemonBagBattleBtn" + currentSelectedPokemonIndex).style.backgroundColor = "";
+                currentSelectedPokemonIndex = pokeIndex;
+                document.querySelector(id).style.backgroundColor = "green";
+
+                let count = 0;
+                let playerPokemonSpec = monsters[playerPokemonDetails.id];
+                playerPokemonSpec.isEnemy = false;
+                playerPokemon = new Monster(playerPokemonSpec);
+                playerPokemon.health = playerPokemonDetails.details.health;
+                gsap.to("#PlayerHealthBar", {
+                    width: playerPokemon.health + "%",
+                });
+                document.querySelector("#attacksBox").replaceChildren();
+                playerPokemonDetails.details.attacks.forEach((attack) => {
+                    const button = document.createElement("button");
+                    button.id = "pokemonAttackBtn" + count;
+                    button.innerHTML = attack.name;
+                    document.querySelector("#attacksBox").append(button);
+                    addAttackQuery("#pokemonAttackBtn" + count);
+                    count++;
+                });
+                renderedSprites[1] = playerPokemon;
+                document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
+                document.querySelector("#pokemonBagUIBattle").style.visibility = "hidden";
+                document.querySelector("#inventoryUI").style.visibility = "hidden";
+            }
+        }
+    });
+}
+
 //initBattle();
 //animateBattle();
 
@@ -274,6 +359,12 @@ document.querySelector("#backInv").addEventListener("click", (e) => {
 
 document.querySelector("#pokeballs").addEventListener("click", (e) => {
     document.querySelector("#pokeballsUI").style.visibility = "visible";
+    document.querySelector("#inventoryUI").style.visibility = "hidden";
+});
+
+document.querySelector("#pokemonBag").addEventListener("click", (e) => {
+    document.querySelector("#pokemonBagUIBattle").style.visibility = "visible";
+    document.querySelector("#pokemonBagBattleBack").disabled = false;
     document.querySelector("#inventoryUI").style.visibility = "hidden";
 });
 

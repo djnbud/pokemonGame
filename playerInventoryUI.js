@@ -32,7 +32,6 @@ function closePlayerInventory() {
     }
 }
 let pokemonBagSelected1;
-let defaultColour;
 function showPokemonBag() {
     pokemonBagSelected1 = null;
     pokemonBagSelected2 = null;
@@ -47,7 +46,6 @@ function showPokemonBag() {
             button.innerHTML = currentPokemon.id;
             document.querySelector("#pokemonBagView").append(button);
             addPokemonSwapQuery("#" + button.id);
-            defaultColour = button.style.backgroundColor;
         } else {
             const button = document.createElement("button");
             button.id = "pokemonBag" + i;
@@ -68,7 +66,7 @@ function addPokemonSwapQuery(id) {
 
             case id:
                 pokemonBagSelected1 = null;
-                document.querySelector(id).style.backgroundColor = defaultColour;
+                document.querySelector(id).style.backgroundColor = "";
                 break;
             default:
                 //means a different pokemon is already selected
@@ -81,7 +79,7 @@ function addPokemonSwapQuery(id) {
                 setLocalPokemon(subStr1, pokemon2);
                 setLocalPokemon(subStr2, pokemon1);
 
-                document.querySelector(pokemonBagSelected1).style.backgroundColor = defaultColour;
+                document.querySelector(pokemonBagSelected1).style.backgroundColor = "";
                 showPokemonBag();
                 break;
         }

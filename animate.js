@@ -55,7 +55,7 @@ function animate() {
                             onComplete() {
                                 //activate a new animation loop
                                 initBattle();
-                                prepareBattle();
+                                prepareBattle(0);
                                 gsap.to("#overlappingDiv", {
                                     opacity: 0,
                                     duration: 0.4,
