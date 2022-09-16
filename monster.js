@@ -20,6 +20,10 @@ class Monster extends Sprite {
         catchChance = 10,
         health,
         maxHealth,
+        baseExpYield,
+        level,
+        levelingType,
+        experience,
     }) {
         if (isEnemy === true) {
             position = enemyPosition;
@@ -32,6 +36,10 @@ class Monster extends Sprite {
         this.attacks = attacks;
         this.runawayChance = runawayChance;
         this.catchChance = catchChance;
+        this.baseExpYield = baseExpYield;
+        this.level = level;
+        this.levelingType = levelingType;
+        this.experience = experience;
     }
 
     faint() {
@@ -91,8 +99,9 @@ class Monster extends Sprite {
                         renderedSprites.splice(1, 1);
                         //Enemy gets hit
                         audio.fireballHit.play();
+                        let healthPercentage = (recipient.health / recipient.maxHealth) * 100;
                         gsap.to(healthBar, {
-                            width: recipient.health + "%",
+                            width: healthPercentage + "%",
                         });
                         gsap.to(recipient.position, {
                             x: recipient.position.x + 10,
@@ -116,8 +125,9 @@ class Monster extends Sprite {
                         onComplete: () => {
                             //Enemy gets hit
                             audio.tackleHit.play();
+                            let healthPercentage = (recipient.health / recipient.maxHealth) * 100;
                             gsap.to(healthBar, {
-                                width: recipient.health + "%",
+                                width: healthPercentage + "%",
                             });
                             gsap.to(recipient.position, {
                                 x: recipient.position.x + 10,

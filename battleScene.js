@@ -132,7 +132,7 @@ function enemyAttacks() {
                     document.querySelector("#dialogueBox").innerHTML = "You have no Pokemon Left and have had to flee!";
                 });
                 healAllLocalPokemon();
-                endBattle();
+                endBattle(false);
             }
         }
     });
@@ -153,8 +153,17 @@ function prepareBattle(pokeInd) {
         playerPokemonSpec.isEnemy = false;
         playerPokemon = new Monster(playerPokemonSpec);
         playerPokemon.health = playerPokemonDetails.details.health;
+        playerPokemon.level = playerPokemonDetails.details.level;
+        let healthPercentage = (playerPokemon.health / playerPokemon.maxHealth) * 100;
         gsap.to("#PlayerHealthBar", {
-            width: playerPokemon.health + "%",
+            width: healthPercentage + "%",
+        });
+
+        let nextLvl = playerPokemon.level + 1;
+        let nextLevelNeeded = experienceLevelGrid[nextLvl][playerPokemon.levelingType];
+        let expPercentage = (playerPokemonDetails.details.experience / nextLevelNeeded) * 100;
+        gsap.to("#PlayerExpBar", {
+            width: expPercentage + "%",
         });
         document.querySelector("#attacksBox").replaceChildren();
         playerPokemonDetails.details.attacks.forEach((attack) => {
@@ -170,7 +179,9 @@ function prepareBattle(pokeInd) {
         enemyPokemonSpec.isEnemy = true;
         enemyPokemon = new Monster(enemyPokemonSpec);
         document.querySelector("#enemyPokemonName").innerHTML = monsters.Draggle.name;
+        document.querySelector("#enemyPokemonLevel").innerHTML = monsters.Draggle.level;
         document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
+        document.querySelector("#playerPokemonLevel").innerHTML = playerPokemonDetails.details.level;
         renderedSprites = [enemyPokemon, playerPokemon];
         animateBattle();
     } else {
@@ -188,7 +199,12 @@ function animateBattle() {
     });
 }
 
-function endBattle() {
+function endBattle(gainExperience) {
+    if (gainExperience === true) {
+        queue.push(() => {
+            experienceGained();
+        });
+    }
     queue.push(() => {
         //fade back to black
         gsap.to("#overlappingDiv", {
@@ -217,6 +233,88 @@ function endBattle() {
     });
 }
 
+function increaseExpBar(widthAmount, levelCount, exp, nextLevelNeeded, onCompleted) {
+    gsap.to("#PlayerExpBar", {
+        width: widthAmount + "%",
+        duration: 0.8,
+        onComplete: () => {
+            if (widthAmount < 100) {
+                onCompleted && onCompleted(exp, levelCount);
+            } else {
+                //update pokemon level here
+                gsap.to("#PlayerExpBar", {
+                    width: 0 + "%",
+                    duration: 0.001,
+                    onComplete: () => {
+                        document.querySelector("#playerPokemonLevel").innerHTML = playerPokemon.level + levelCount;
+
+                        levelCount++;
+                        exp -= nextLevelNeeded;
+                        let playerNextLevel = playerPokemon.level + levelCount;
+                        nextLevelNeeded = experienceLevelGrid[playerNextLevel][playerPokemon.levelingType];
+                        let nextExpPercentage = (exp / nextLevelNeeded) * 100;
+                        if (nextExpPercentage > 100) {
+                            increaseExpBar(100, levelCount, exp, nextLevelNeeded, onCompleted);
+                        } else {
+                            increaseExpBar(nextExpPercentage, levelCount, exp, nextLevelNeeded, onCompleted);
+                        }
+                    },
+                });
+            }
+        },
+    });
+}
+
+function finishExpGain(exp, levelCount) {
+    let newLevel = playerPokemon.level + (levelCount - 1);
+    waiting = false;
+    document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + "reached level " + newLevel;
+    let localPoke = getLocalStoredPokemon(),
+        playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+
+    playerPokemonDetails.details.level = newLevel;
+    playerPokemonDetails.details.experience = exp;
+
+    setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
+}
+
+function experienceGained() {
+    let localPoke = getLocalStoredPokemon(),
+        playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+    let newExp = experienceCalculator(playerPokemon, enemyPokemon),
+        exp = newExp + playerPokemonDetails.details.experience;
+    document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + " gained " + newExp + " experience!";
+    let nextLvl = playerPokemon.level + 1;
+    let nextLevelNeeded = experienceLevelGrid[nextLvl][playerPokemon.levelingType];
+    let expPercentage = (exp / nextLevelNeeded) * 100;
+    //if more than 100% reached then need to loop until they go up x amount of levels
+    if (expPercentage > 100) {
+        waiting = true;
+        let levelCount = 1,
+            playerNextLevel = playerPokemon.level + levelCount,
+            nextExpPercentage = (exp / nextLevelNeeded) * 100;
+
+        increaseExpBar(100, levelCount, exp, playerNextLevel, finishExpGain);
+    } else {
+        if (expPercentage === 100) {
+            gsap.to("#PlayerExpBar", {
+                width: 100 + "%",
+                onComplete: () => {
+                    document.querySelector("#PlayerExpBar").width = 0 + "%";
+                    //update pokemon level here
+                    document.querySelector("#playerPokemonLevel").innerHTML = playerPokemon.level + 1;
+                    document.querySelector("#dialogueBox").innerHTML =
+                        playerPokemon.name + "reached level " + playerPokemon.level + 1;
+                },
+            });
+        } else {
+            gsap.to("#PlayerExpBar", {
+                width: expPercentage + "%",
+            });
+        }
+    }
+}
+
 function addAttackQuery(id) {
     document.querySelector(id).addEventListener("click", (e) => {
         const selectedAttack = attacks[e.currentTarget.innerHTML];
@@ -226,7 +324,8 @@ function addAttackQuery(id) {
             queue.push(() => {
                 enemyPokemon.faint();
             });
-            endBattle();
+
+            endBattle(true);
         }
 
         enemyAttacks();
@@ -279,7 +378,7 @@ function addPokeballQuery(id) {
                                         "Congratualtions! You caught a " + enemyPokemon.name + "!";
                                     renderedSprites.pop();
 
-                                    endBattle();
+                                    endBattle(true);
                                 } else {
                                     document.querySelector("#dialogueBox").innerHTML =
                                         enemyPokemon.name + " managed to jump out the pokeball!";
@@ -312,8 +411,16 @@ function addPokemonBattleBagQuery(id) {
                 playerPokemonSpec.isEnemy = false;
                 playerPokemon = new Monster(playerPokemonSpec);
                 playerPokemon.health = playerPokemonDetails.details.health;
+                playerPokemon.level = playerPokemonDetails.details.level;
+                let healthPercentage = (playerPokemon.health / playerPokemon.maxHealth) * 100;
                 gsap.to("#PlayerHealthBar", {
-                    width: playerPokemon.health + "%",
+                    width: healthPercentage + "%",
+                });
+                let nextLvl = playerPokemon.level + 1;
+                let nextLevelNeeded = experienceLevelGrid[nextLvl][playerPokemon.levelingType];
+                let expPercentage = (playerPokemonDetails.details.experience / nextLevelNeeded) * 100;
+                gsap.to("#PlayerExpBar", {
+                    width: expPercentage + "%",
                 });
                 document.querySelector("#attacksBox").replaceChildren();
                 playerPokemonDetails.details.attacks.forEach((attack) => {
@@ -326,6 +433,8 @@ function addPokemonBattleBagQuery(id) {
                 });
                 renderedSprites[1] = playerPokemon;
                 document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
+                document.querySelector("#playerPokemonLevel").innerHTML = playerPokemonDetails.details.level;
+
                 document.querySelector("#pokemonBagUIBattle").style.visibility = "hidden";
                 document.querySelector("#inventoryUI").style.visibility = "hidden";
             }
@@ -374,7 +483,7 @@ document.querySelector("#runAway").addEventListener("click", (e) => {
             document.querySelector("#dialogueBox").style.display = "block";
             document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + " successfully escaped";
         });
-        endBattle();
+        endBattle(false);
     } else {
         queue.push(() => {
             document.querySelector("#dialogueBox").style.display = "block";

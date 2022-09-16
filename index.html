@@ -110,7 +110,10 @@
             "
         >
             <h1 id="enemyPokemonName"></h1>
-
+            <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <h1>LVL</h1>
+                <h1 id="enemyPokemonLevel"></h1>
+            </div>
             <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
                 <h1>HP</h1>
                 <div id="enemyHPContainer" style="position: relative; bottom: 5px">
@@ -137,12 +140,24 @@
         >
             <h1 id="playerPokemonName"></h1>
             <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <h1>LVL</h1>
+                <h1 id="playerPokemonLevel"></h1>
+            </div>
+            <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
                 <h1>HP</h1>
                 <div id="playerHPContainer" style="position: relative; bottom: 5px">
                     <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
                     <div
                         id="PlayerHealthBar"
                         style="height: 5px; background-color: green; position: absolute; top: 10px; left: 0; right: 0"
+                    ></div>
+                </div>
+                <h1>Exp</h1>
+                <div id="playerExpContainer" style="position: relative; bottom: 5px">
+                    <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
+                    <div
+                        id="PlayerExpBar"
+                        style="height: 5px; background-color: blue; position: absolute; top: 10px; left: 0; right: 0"
                     ></div>
                 </div>
             </div>
@@ -304,6 +319,7 @@
 <script src="data/battleZones.js"></script>
 <script src="data/collisions.js"></script>
 <script src="data/attacks.js"></script>
+<script src="data/levelExp.js"></script>
 <script src="data/monsters.js"></script>
 <script src="utils.js"></script>
 <script src="sprite.js"></script>
