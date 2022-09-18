@@ -23,11 +23,14 @@ class Monster extends Sprite {
         level,
         levelingType,
         experience,
-        catchRate
+        catchRate,
+        enemyImage
     }) {
         if (isEnemy === true) {
             position = enemyPosition;
+            image = enemyImage;
         }
+
         super({ position, image, frames, sprites, animate, rotation, scale, velocity, direction });
         this.health = health;
         this.maxHealth = maxHealth;
