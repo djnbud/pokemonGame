@@ -2,10 +2,12 @@ function initPlayerInv() {
     document.querySelector("#pokemonPlayerInv").addEventListener("click", (e) => {
         showPokemonBag();
     });
-    document.querySelector("#pokemonStoragePlayerInv").addEventListener("click", (e) => {});
+    document.querySelector("#pokemonStoragePlayerInv").addEventListener("click", (e) => { });
 
-    document.querySelector("#pokedexPlayerInv").addEventListener("click", (e) => {});
-    document.querySelector("#itemsPlayerInv").addEventListener("click", (e) => {});
+    document.querySelector("#pokedexPlayerInv").addEventListener("click", (e) => { });
+    document.querySelector("#itemsPlayerInv").addEventListener("click", (e) => {
+        showItemBag();
+    });
     document.querySelector("#closePlayerInv").addEventListener("click", (e) => {
         closePlayerInventory();
     });
@@ -31,6 +33,31 @@ function closePlayerInventory() {
         document.querySelector("#pokemonBagView").style.visibility = "hidden";
     }
 }
+
+function showItemBag() {
+    document.querySelector("#pokemonBagView").replaceChildren();
+    document.querySelector("#pokemonBagView").style.visibility = "visible";
+    let playerItems = getItems(),
+        count = 0;
+
+    playerItems.forEach((value, key) => {
+        const button = document.createElement("button");
+        button.innerHTML = key + " x" + value.amount;
+        button.id = key;
+        button.style.minHeight = "38px";
+        button.style.maxHeight = "38px";
+        document.querySelector("#pokemonBagView").append(button);
+        count++;
+
+    });
+
+    if (count < 6) {
+        for (let i = 0; i < 6 - count; i++) {
+            createBlankSpace("itemBag" + i, "#pokemonBagView")
+        }
+    }
+}
+
 let pokemonBagSelected1;
 function showPokemonBag() {
     pokemonBagSelected1 = null;
@@ -47,11 +74,7 @@ function showPokemonBag() {
             document.querySelector("#pokemonBagView").append(button);
             addPokemonSwapQuery("#" + button.id);
         } else {
-            const button = document.createElement("button");
-            button.id = "pokemonBag" + i;
-            button.disabled = true;
-            //button.innerHTML = currentPokemon.id;
-            document.querySelector("#pokemonBagView").append(button);
+            createBlankSpace("pokemonBag" + i, "#pokemonBagView");
         }
     }
 }

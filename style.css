@@ -13,6 +13,10 @@ button {border: 0; cursor: pointer;font-size: 16px}
 button:hover {
     background-color: #ddd;
 }
+
+.pokemonEmptyBagButton:hover {
+    pointer-events: none;
+}
 .transition{
     background-color: black;
             position: absolute;

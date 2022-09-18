@@ -17,13 +17,13 @@ class Monster extends Sprite {
         name,
         attacks,
         runawayChance = 10,
-        catchChance = 10,
         health,
         maxHealth,
         baseExpYield,
         level,
         levelingType,
         experience,
+        catchRate
     }) {
         if (isEnemy === true) {
             position = enemyPosition;
@@ -35,11 +35,11 @@ class Monster extends Sprite {
         this.name = name;
         this.attacks = attacks;
         this.runawayChance = runawayChance;
-        this.catchChance = catchChance;
         this.baseExpYield = baseExpYield;
         this.level = level;
         this.levelingType = levelingType;
         this.experience = experience;
+        this.catchRate = catchRate;
     }
 
     faint() {
@@ -58,11 +58,6 @@ class Monster extends Sprite {
 
         const runawayCheck = Math.floor(Math.random() * this.runawayChance);
         return runawayCheck > 5;
-    }
-
-    catchAttempt() {
-        const catchCheck = Math.floor(Math.random() * this.catchChance);
-        return catchCheck > 5;
     }
 
     attack({ attack, recipient, renderedSprites }) {

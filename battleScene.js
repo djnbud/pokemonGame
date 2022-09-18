@@ -21,6 +21,7 @@ function initBattle() {
     document.querySelector("#inventoryUI").style.visibility = "hidden";
     document.querySelector("#pokeballsUI").style.visibility = "hidden";
     document.querySelector("#pokemonBagUIBattle").style.visibility = "hidden";
+    document.querySelector("#itemsBagUI").style.visibility = "hidden";
     document.querySelector("#enemyHealthBar").style.width = "100%";
     document.querySelector("#playerHealthBar").style.width = "100%";
     waiting = false;
@@ -33,35 +34,45 @@ function initBattle() {
 
 function pokeballsInit() {
     let pokeballs = getPokeballs();
+
     let count = 0;
+    document.querySelector("#pokeballsBackDiv").replaceChildren();
     document.querySelector("#pokeballsBox").replaceChildren();
     pokeballs.forEach((value, key) => {
         const button = document.createElement("button");
-        button.innerHTML = key;
-        button.id = "pokeballBtn" + count;
+        button.innerHTML = key + " x" + value.amount;
+        button.id = key;
+        if (count % 2 == 0) {
+            button.style.borderBottom = "black solid"
+            button.style.borderRight = "black solid"
+        } else {
+
+            button.style.borderBottom = "black solid"
+        }
+        button.style.minHeight = "38px";
+        button.style.maxHeight = "38px";
         document.querySelector("#pokeballsBox").append(button);
 
-        addPokeballQuery("#pokeballBtn" + count);
-
-        const pokeballAmount = document.createElement("h1");
-        pokeballAmount.innerHTML = value.amount;
-        pokeballAmount.id = key;
-        document.querySelector("#pokeballsBox").append(pokeballAmount);
+        addPokeballQuery("#" + key);
         count++;
     });
-    const button = document.createElement("button");
-    button.innerHTML = "Back";
-    button.id = "pokeballsBack";
-    document.querySelector("#pokeballsBox").append(button);
-    document.querySelector("#pokeballsBack").addEventListener("click", (e) => {
-        document.querySelector("#pokeballsUI").style.visibility = "hidden";
-        document.querySelector("#inventoryUI").style.visibility = "visible";
-    });
+
+    if (count < 6) {
+        for (let i = 0; i < 6 - count; i++) {
+            createBlankSpace("pokeballBlank" + i, "#pokeballsBox")
+        }
+    } else {
+        document.querySelector("#pokeballsBox").overflow = "scroll";
+    }
+
+    createBackButton("pokeballsBack", "pokeballsBackDiv", "pokeballsUI", "inventoryUI");
+
 }
 
 function pokemonBagInit() {
     let localPoke = getLocalStoredPokemon();
     document.querySelector("#pokemonBattleBag").replaceChildren();
+    document.querySelector("#pokemonBattleBackDiv").replaceChildren();
 
     for (let i = 0; i < 6; i++) {
         let currentPokemon = localPoke.get(i);
@@ -71,27 +82,60 @@ function pokemonBagInit() {
             if (i === currentSelectedPokemonIndex) {
                 button.style.backgroundColor = "green";
             }
+            if (i % 2 == 0) {
+                button.style.borderBottom = "black solid"
+                button.style.borderRight = "black solid"
+            } else {
+
+                button.style.borderBottom = "black solid"
+            }
+            button.style.minHeight = "38px";
+            button.style.maxHeight = "38px";
             button.innerHTML = currentPokemon.id;
             document.querySelector("#pokemonBattleBag").append(button);
             addPokemonBattleBagQuery("#" + button.id);
         } else {
-            const button = document.createElement("button");
-            button.id = "pokemonBagBattleBtn" + i;
-            button.disabled = true;
-            //button.innerHTML = currentPokemon.id;
-            document.querySelector("#pokemonBattleBag").append(button);
+            createBlankSpace("pokemonBagBattleBtn" + i, "#pokemonBattleBag");
         }
     }
 
-    const button = document.createElement("button");
-    button.innerHTML = "Back";
-    button.id = "pokemonBagBattleBack";
-    document.querySelector("#pokemonBattleBag").append(button);
-    document.querySelector("#pokemonBagBattleBack").addEventListener("click", (e) => {
-        document.querySelector("#pokemonBagUIBattle").style.visibility = "hidden";
-        document.querySelector("#inventoryUI").style.visibility = "visible";
-    });
+    createBackButton("pokemonBagBattleBack", "pokemonBattleBackDiv", "pokemonBagUIBattle", "inventoryUI");
 }
+
+function itemsBagInit() {
+    document.querySelector("#itemsBattleBag").replaceChildren();
+    document.querySelector("#itemsBackDiv").replaceChildren();
+    let count = 0;
+    let playerItems = getItems();
+    playerItems.forEach((value, key) => {
+        let itemDesc = items[key];
+        if (itemDesc.type === "heal") {
+            const button = document.createElement("button");
+            button.innerHTML = key + " x" + value.amount;
+            button.id = key;
+            if (count % 2 == 0) {
+                button.style.borderBottom = "black solid"
+                button.style.borderRight = "black solid"
+            } else {
+
+                button.style.borderBottom = "black solid"
+            }
+            button.style.minHeight = "38px";
+            button.style.maxHeight = "38px";
+            document.querySelector("#itemsBattleBag").append(button);
+            count++;
+        }
+    });
+
+    if (count < 6) {
+        for (let i = 0; i < 6 - count; i++) {
+            createBlankSpace("itemBagBattleBtn" + i, "#itemsBattleBag")
+        }
+    }
+
+    createBackButton("itemsBagBattleBack", "itemsBackDiv", "itemsBagUI", "inventoryUI")
+}
+
 
 function enemyAttacks() {
     //enemy attacks
@@ -149,6 +193,7 @@ function prepareBattle(pokeInd) {
     if (playerPokemonDetails.details.health > 0) {
         pokeballsInit();
         pokemonBagInit();
+        itemsBagInit();
         let playerPokemonSpec = monsters[playerPokemonDetails.id];
         playerPokemonSpec.isEnemy = false;
         playerPokemon = new Monster(playerPokemonSpec);
@@ -268,7 +313,7 @@ function increaseExpBar(widthAmount, levelCount, exp, nextLevelNeeded, onComplet
 function finishExpGain(exp, levelCount) {
     let newLevel = playerPokemon.level + (levelCount - 1);
     waiting = false;
-    document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + "reached level " + newLevel;
+    document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + " reached level " + newLevel;
     let localPoke = getLocalStoredPokemon(),
         playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
 
@@ -341,8 +386,9 @@ function addAttackQuery(id) {
 
 function addPokeballQuery(id) {
     document.querySelector(id).addEventListener("click", (e) => {
-        let pokeballMapp = getPokeballs();
-        let curentPokeball = pokeballMapp.get(e.currentTarget.innerHTML);
+        let pokeballMapp = getPokeballs(),
+            curentPokeball = pokeballMapp.get(e.currentTarget.id),
+            pokeballDesc = pokeballs[e.currentTarget.id];
         if (curentPokeball.amount > 0) {
             const pokeballImage = new Image();
             pokeballImage.src = "./assets/pokeball.png";
@@ -352,8 +398,8 @@ function addPokeballQuery(id) {
                 scale: 0.2,
             });
 
-            usePokeball(e.currentTarget.innerHTML);
-            document.querySelector("#" + e.currentTarget.innerHTML).innerHTML -= 1;
+            usePokeball(e.currentTarget.id);
+            document.querySelector("#" + e.currentTarget.id).innerHTML = e.currentTarget.id + " x" + curentPokeball.amount;
             renderedSprites.push(pokeball);
             document.querySelector("#pokeballsUI").style.visibility = "hidden";
             document.querySelector("#dialogueBox").style.display = "block";
@@ -371,7 +417,7 @@ function addPokeballQuery(id) {
                             yoyo: true,
                             onComplete: () => {
                                 waiting = false;
-                                if (enemyPokemon.catchAttempt()) {
+                                if (catchCalculator(pokeballDesc.catchRate, enemyPokemon.catchRate, enemyPokemon.maxHealth, enemyPokemon.health, enemyPokemon.status)) {
                                     addPokemonToStorage(enemyPokemon, enemyPokemon.name);
 
                                     document.querySelector("#dialogueBox").innerHTML =
@@ -470,6 +516,13 @@ document.querySelector("#pokeballs").addEventListener("click", (e) => {
     document.querySelector("#pokeballsUI").style.visibility = "visible";
     document.querySelector("#inventoryUI").style.visibility = "hidden";
 });
+
+document.querySelector("#potions").addEventListener("click", (e) => {
+    document.querySelector("#itemsBagUI").style.visibility = "visible";
+    document.querySelector("#inventoryUI").style.visibility = "hidden";
+});
+
+
 
 document.querySelector("#pokemonBag").addEventListener("click", (e) => {
     document.querySelector("#pokemonBagUIBattle").style.visibility = "visible";

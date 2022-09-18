@@ -1,12 +1,13 @@
-let pokeballs = new Map();
+let playerPokeballs = new Map();
 
 let storedPokemon = new Map();
 let localPokemon = new Map();
+let localItems = new Map();
 
 function initInventory() {
     //normally here we will check what player has in inventory such as potions and pokeballs
     //for now we will give player the same on init
-    pokeballs.set("pokeball", { amount: 10 });
+    playerPokeballs.set("pokeball", { amount: 10 });
     localPokemon.set(0, {
         id: "Emby",
         nickname: "Emby",
@@ -14,25 +15,31 @@ function initInventory() {
     });
     storedPokemon.set("localStorage", localPokemon);
     storedPokemon.set("pcStorage", []);
+
+    localItems.set("potion", { amount: 5 });
 }
 
 function usePokeball(name) {
-    if (pokeballs.has(name)) {
-        let currentPokeBalls = pokeballs.get(name);
+    if (playerPokeballs.has(name)) {
+        let currentPokeBalls = playerPokeballs.get(name);
         if (currentPokeBalls.amount > 0) {
             currentPokeBalls.amount -= 1;
-            pokeballs.set(name, currentPokeBalls);
+            playerPokeballs.set(name, currentPokeBalls);
             return true;
         }
     }
     return false;
 }
 function getPokeballs() {
-    return pokeballs;
+    return playerPokeballs;
 }
 
 function getstoredPokemon() {
     return storedPokemon;
+}
+
+function getItems() {
+    return localItems;
 }
 
 function getLocalStoredPokemon() {
@@ -57,7 +64,8 @@ function checkAllLocalPokemonHealth() {
     }
     return false;
 }
-
+//For if all pokemon are fainted during a battle so need to heal them back to full
+//Or when visiting poke centre
 function healAllLocalPokemon() {
     let localPokemon = storedPokemon.get("localStorage");
     localPokemon.forEach((value, key) => {

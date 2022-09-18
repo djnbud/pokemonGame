@@ -13,6 +13,7 @@ const monsters = {
         experience: 0,
         attacks: [attacks.Tackle, attacks.Fireball],
         baseExpYield: 58,
+        catchRate: 58
     },
     Draggle: {
         position: { x: 280, y: 325 },
@@ -29,5 +30,6 @@ const monsters = {
         experience: 0,
         attacks: [attacks.Tackle, attacks.Fireball],
         baseExpYield: 35,
+        catchRate: 125
     },
 };
