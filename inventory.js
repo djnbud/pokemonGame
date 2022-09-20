@@ -55,6 +55,10 @@ function setLocalPokemon(index, details) {
     localPokemon.set(index, details);
 }
 
+function setItem(id, details) {
+    localItems.set(id, details);
+}
+
 function checkAllLocalPokemonHealth() {
     let localPokemon = storedPokemon.get("localStorage");
     for (let [key, value] of localPokemon) {
