@@ -24,7 +24,11 @@ class Monster extends Sprite {
         levelingType,
         experience,
         catchRate,
-        enemyImage
+        enemyImage,
+        attackStat,
+        defenseStat,
+        speedStat,
+        type,
     }) {
         if (isEnemy === true) {
             position = enemyPosition;
@@ -43,6 +47,10 @@ class Monster extends Sprite {
         this.levelingType = levelingType;
         this.experience = experience;
         this.catchRate = catchRate;
+        this.attackStat = attackStat;
+        this.defenseStat = defenseStat;
+        this.speedStat = speedStat;
+        this.type = type;
     }
 
     faint() {
@@ -76,7 +84,8 @@ class Monster extends Sprite {
         if (this.isEnemy) {
             rotation = -2.2;
         }
-        recipient.health -= attack.damage;
+
+        recipient.health -= damageCalculator(this, recipient, attack);
         switch (attack.name) {
             case "Fireball":
                 audio.initFireball.play();

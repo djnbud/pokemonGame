@@ -20,11 +20,9 @@ function experienceCalculator(playerPokemon, enemyPokemon) {
 }
 
 function catchCalculator(ballCatchRate, pokemonCatchRate, maxHp, currentHp, pokemonStatus) {
-
     let catchAttempt = Math.floor(Math.random() * 255);
 
     let topValue = ((3 * maxHp - 2 * currentHp) * pokemonCatchRate * ballCatchRate) / (3 * maxHp);
-
 
     if (topValue < 1) {
         topValue = 1;
@@ -34,16 +32,48 @@ function catchCalculator(ballCatchRate, pokemonCatchRate, maxHp, currentHp, poke
     }
 
     if (catchAttempt <= topValue) {
-        return true
+        return true;
     }
     return false;
+}
+
+//Gen 5 calculation note that have not include certain calculations for now
+function damageCalculator(attackingPokemon, defendingPokemon, attackingMove) {
+    let level = attackingPokemon.level,
+        a = attackingPokemon.attackStat,
+        d = defendingPokemon.defenseStat,
+        power = attackingMove.power,
+        randomAmnt = Math.floor(Math.random() * (100 - 85 + 1) + 85),
+        weather = 1, //potentially add in weather
+        typeEfectiveness = typeChart[attackingMove.type][defendingPokemon.type],
+        critAttempt = Math.floor(Math.random() * 255),
+        crit = 1;
+    if (critAttempt < attackingPokemon.speedStat / 2) {
+        crit = 1.5;
+    }
+
+    randomAmnt = randomAmnt / 100;
+
+    let part1Calc = (2 * level) / 5;
+    part1Calc += 2;
+    let attDef = a / d;
+    let part2Calc = part1Calc * power * attDef;
+    let overCalc = part2Calc / 50;
+    overCalc += 2;
+    overCalc = overCalc * weather;
+    overCalc = overCalc * crit;
+    overCalc = overCalc * randomAmnt;
+    overCalc = overCalc * typeEfectiveness;
+
+    //after calculating the damage return and inflict
+    return Math.floor(overCalc);
 }
 
 function createBlankSpace(id, appendTo) {
     const button = document.createElement("div");
     button.id = id;
     button.width = "100%";
-    button.height = "100%"
+    button.height = "100%";
     button.animate = false;
 
     document.querySelector(appendTo).append(button);

@@ -1,4 +1,4 @@
 const attacks = {
-    Tackle: { name: "Tackle", damage: 10, type: "Normal", color: "black" },
-    Fireball: { name: "Fireball", damage: 25, type: "Fire", color: "red" },
+    Tackle: { name: "Tackle", type: "normal", power: 40, color: "black" },
+    Fireball: { name: "Fireball", type: "fire", power: 40, color: "red" },
 };

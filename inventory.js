@@ -11,7 +11,7 @@ function initInventory() {
     localPokemon.set(0, {
         id: "Emby",
         nickname: "Emby",
-        details: { level: 1, attacks: [attacks.Tackle, attacks.Fireball], health: 100, maxHealth: 100, experience: 0 },
+        details: { level: 1, attacks: [attacks.Tackle, attacks.Fireball], health: 45, maxHealth: 45, experience: 0 },
     });
     storedPokemon.set("localStorage", localPokemon);
     storedPokemon.set("pcStorage", []);
