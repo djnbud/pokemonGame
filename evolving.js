@@ -10,7 +10,7 @@ function checkEvolution(pokemon) {
 }
 
 function levelEvolutionCHeck(pokemon, levelEvolution) {
-    if (pokemon.level >= levelEvolution.Level) {
+    if (pokemon.details.level >= levelEvolution.Level) {
         return levelEvolution.EvolveTo;
     }
     return null;

@@ -16,7 +16,7 @@ function initInventory() {
       attacks: [attacks.Tackle, attacks.Fireball],
       health: 45,
       maxHealth: 45,
-      experience: 0,
+      experience: 116,
       attackStat: 49,
       defenseStat: 49,
       speedStat: 49,

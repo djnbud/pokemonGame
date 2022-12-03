@@ -84,8 +84,8 @@ class Monster extends Sprite {
         if (this.isEnemy) {
             rotation = -2.2;
         }
-
-        recipient.health -= damageCalculator(this, recipient, attack);
+        let damageCalc = damageCalculator(this, recipient, attack);
+        recipient.health -= damageCalc.damage
         switch (attack.name) {
             case "Fireball":
                 audio.initFireball.play();
@@ -148,5 +148,7 @@ class Monster extends Sprite {
                     .to(this.position, { x: this.position.x });
                 break;
         }
+
+        return damageCalc.wasCrit;
     }
 }

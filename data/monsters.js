@@ -2,6 +2,7 @@ const monsters = {
     Emby: {
         position: { x: 280, y: 325 },
         enemyPosition: { x: 800, y: 100 },
+        evolvePosition: { x: 500, y: 200 },
         image: { src: "./assets/embySprite.png" },
         enemyImage: { src: "./assets/embySprite.png" },
         frames: { max: 4, hold: 30 },
@@ -23,6 +24,7 @@ const monsters = {
     Emby2: {
         position: { x: 280, y: 325 },
         enemyPosition: { x: 800, y: 100 },
+        evolvePosition: { x: 500, y: 200 },
         image: { src: "./assets/embySprite.png" },
         enemyImage: { src: "./assets/embySprite.png" },
         frames: { max: 4, hold: 30 },
@@ -44,6 +46,7 @@ const monsters = {
     Draggle: {
         position: { x: 280, y: 325 },
         enemyPosition: { x: 800, y: 100 },
+        evolvePosition: { x: 500, y: 200 },
         image: { src: "./assets/draggleSprite.png" },
         enemyImage: { src: "./assets/enemyDraggleSprite.png" },
         frames: { max: 4, hold: 30 },

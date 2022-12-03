@@ -1,9 +1,14 @@
-const canvas = document.querySelector("canvas");
+const canvas = document.querySelector("#canvas");
+const canvas2 = document.querySelector("#canvas2");
+document.querySelector("#dialogueBox").style.visibility = "hidden";
 const c = canvas.getContext("2d");
+const c2 = canvas2.getContext("2d");
 
 canvas.width = 1024;
 canvas.height = 576;
-
+canvas2.width = 1024;
+canvas2.height = 576;
+canvas2.setAttribute("hidden", "hidden");
 const collisionsMap = [];
 for (let i = 0; i < collisions.length; i += 70) {
     collisionsMap.push(collisions.slice(i, 70 + i));
@@ -51,7 +56,8 @@ battleZonesMap.forEach((row, i) => {
 
 c.fillStyle = "white";
 c.fillRect(0, 0, canvas.width, canvas.height);
-
+c2.fillStyle = "white";
+c2.fillRect(0, 0, canvas2.width, canvas2.height);
 const map = new Image();
 map.src = "./assets/PelletTown.png";
 

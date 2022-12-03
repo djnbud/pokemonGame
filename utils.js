@@ -90,10 +90,17 @@ function damageCalculator(attackingPokemon, defendingPokemon, attackingMove) {
     randomAmnt = Math.floor(Math.random() * (100 - 85 + 1) + 85),
     weather = 1, //potentially add in weather
     typeEfectiveness = typeChart[attackingMove.type][defendingPokemon.type],
-    critAttempt = Math.floor(Math.random() * 255),
-    crit = 1;
-  if (critAttempt < attackingPokemon.speedStat / 2) {
+    critAttempt = Math.floor(Math.random() * 24),
+    crit = 1,
+    wasCrit = false
+  STAB = 1;
+  if (critAttempt === 1) {
+    wasCrit = true;
     crit = 1.5;
+  }
+
+  if (attackingPokemon.type === attackingMove.type) {
+    STAB = 1.5;
   }
 
   randomAmnt = randomAmnt / 100;
@@ -107,10 +114,11 @@ function damageCalculator(attackingPokemon, defendingPokemon, attackingMove) {
   overCalc = overCalc * weather;
   overCalc = overCalc * crit;
   overCalc = overCalc * randomAmnt;
+  overCalc = overCalc * STAB;
   overCalc = overCalc * typeEfectiveness;
 
   //after calculating the damage return and inflict
-  return Math.floor(overCalc);
+  return { damage: Math.floor(overCalc), wasCrit: wasCrit };
 }
 
 function createBlankSpace(id, appendTo) {

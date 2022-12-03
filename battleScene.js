@@ -11,6 +11,7 @@ let enemyPokemon;
 let playerPokemon;
 let currentSelectedPokemonIndex;
 let renderedSprites;
+let evolveSprites;
 let battleAnimationId;
 let queue;
 let waiting;
@@ -19,11 +20,13 @@ let currentPotionType;
 
 function initBattle() {
     document.querySelector("#userInterface").style.display = "block";
+    document.querySelector("#dialogueBox").style.visibility = "visible";
     document.querySelector("#dialogueBox").style.display = "none";
     document.querySelector("#inventoryUI").style.visibility = "hidden";
     document.querySelector("#pokeballsUI").style.visibility = "hidden";
     document.querySelector("#pokemonBagUIBattle").style.visibility = "hidden";
     document.querySelector("#itemsBagUI").style.visibility = "hidden";
+
     document.querySelector("#enemyHealthBar").style.width = "100%";
     document.querySelector("#playerHealthBar").style.width = "100%";
     waiting = false;
@@ -143,11 +146,20 @@ function enemyAttacks() {
     const randomAttack = enemyPokemon.attacks[Math.floor(Math.random() * enemyPokemon.attacks.length)];
 
     queue.push(() => {
-        enemyPokemon.attack({
+
+
+
+        let wasCrit = enemyPokemon.attack({
             attack: randomAttack,
             recipient: playerPokemon,
             renderedSprites: renderedSprites,
         });
+        if (wasCrit === true) {
+            queue.push(() => {
+                document.querySelector("#dialogueBox").style.display = "block";
+                document.querySelector("#dialogueBox").innerHTML = "It was a Critical Hit!";
+            });
+        }
         let localPoke = getLocalStoredPokemon(),
             playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
         if (playerPokemon.health <= 0) {
@@ -249,7 +261,16 @@ function prepareBattle(pokeInd) {
         document.querySelector("#playerPokemonName").innerHTML = playerPokemonDetails.nickname;
         document.querySelector("#playerPokemonLevel").innerHTML = playerPokemonDetails.details.level;
         renderedSprites = [enemyPokemon, playerPokemon];
+        evolveSprites = [];
         animateBattle();
+
+        document.querySelector("#dialogueBox").style.display = "block";
+        document.querySelector("#dialogueBox").innerHTML = "A wild " + enemyPokemonSpec.name + " appeared!";
+
+        if (enemyPokemon.speedStat > playerPokemon.speedStat) {
+            enemyAttacks();
+        }
+
     } else {
         currentSelectedPokemonIndex++;
         prepareBattle(currentSelectedPokemonIndex);
@@ -259,10 +280,16 @@ function prepareBattle(pokeInd) {
 function animateBattle() {
     battleAnimationId = window.requestAnimationFrame(animateBattle);
     battleBackground.draw();
-
-    renderedSprites.forEach((sprite) => {
-        sprite.draw();
-    });
+    if (renderedSprites !== undefined) {
+        renderedSprites.forEach((sprite) => {
+            sprite.draw();
+        });
+    }
+    if (evolveSprites !== undefined) {
+        evolveSprites.forEach((sprite) => {
+            sprite.draw2();
+        });
+    }
 }
 
 function endBattle(gainExperience) {
@@ -291,7 +318,9 @@ function endBattle(gainExperience) {
                 enemyPokemon = null;
                 playerPokemon = null;
                 renderedSprites = [];
+                evolveSprites = [];
                 battle.initiated = false;
+                document.querySelector("#dialogueBox").style.visibility = "hidden";
                 audio.battle.stop();
                 audio.Map.play();
             },
@@ -351,8 +380,55 @@ function finishExpGain(exp, levelCount) {
     playerPokemonDetails.details.experience = exp;
 
     setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
+
     //check if pokemon reached to a level stage where it can evolve
-    if (checkEvolution(localPoke.get(currentSelectedPokemonIndex)) !== null) {
+    let checkEvol = checkEvolution(localPoke.get(currentSelectedPokemonIndex));
+    if (checkEvol !== null) {
+
+        document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + " is Evolving!";
+        waiting = true;
+
+        let newPokemonSpec = monsters[checkEvol];
+        playerPokemonSpec.evolve = true;
+        newPokemonSpec.evolve = true;
+        let preEvolution = new Sprite(playerPokemonSpec)
+        evolveSprites.push(preEvolution);
+        let postEvolution = new Sprite(newPokemonSpec)
+        evolveSprites.push(postEvolution);
+
+        canvas2.removeAttribute("hidden");
+        postEvolution.opacity = 0;
+        gsap.to(postEvolution, {
+            opacity: 1,
+            repeat: 3,
+            yoyo: true
+        }
+        );
+        gsap.to(preEvolution, {
+            opacity: 0.2,
+            repeat: 3,
+            yoyo: true,
+            onComplete: () => {
+                waiting = false;
+                preEvolution.opacity = 0;
+                postEvolution.opacity = 1;
+                let prevPokemonId = playerPokemonDetails.id;
+                let evolvedPokemonStats = statCalculator(playerPokemonDetails.details, newPokemonSpec);
+                playerPokemonDetails.details.maxHealth = evolvedPokemonStats.newHealth;
+                playerPokemonDetails.details.attackStat = evolvedPokemonStats.newAttack;
+                playerPokemonDetails.details.defenseStat = evolvedPokemonStats.newDefense;
+                playerPokemonDetails.details.speedStat = evolvedPokemonStats.newSpeed;
+                playerPokemonDetails.details.experience = exp;
+                playerPokemonDetails.id = checkEvol;
+                if (playerPokemonDetails.nickname === prevPokemonId) {
+                    playerPokemonDetails.nickname = checkEvol;
+                }
+                setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
+                document.querySelector("#dialogueBox").innerHTML = prevPokemonId + " evolved into " + checkEvol + "!";
+                canvas2.setAttribute("hidden", "hidden");
+            }
+        }
+        );
     }
 }
 
@@ -396,11 +472,18 @@ function experienceGained() {
 function addAttackQuery(id) {
     document.querySelector(id).addEventListener("click", (e) => {
         const selectedAttack = attacks[e.currentTarget.innerHTML];
-        playerPokemon.attack({
+        let wasCrit = playerPokemon.attack({
             attack: selectedAttack,
             recipient: enemyPokemon,
             renderedSprites: renderedSprites,
         });
+
+        if (wasCrit === true) {
+            queue.push(() => {
+                document.querySelector("#dialogueBox").style.display = "block";
+                document.querySelector("#dialogueBox").innerHTML = "It was a Critical Hit!";
+            });
+        }
 
         if (enemyPokemon.health <= 0) {
             queue.push(() => {
