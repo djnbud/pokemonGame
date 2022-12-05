@@ -56,8 +56,7 @@ battleZonesMap.forEach((row, i) => {
 
 c.fillStyle = "white";
 c.fillRect(0, 0, canvas.width, canvas.height);
-c2.fillStyle = "white";
-c2.fillRect(0, 0, canvas2.width, canvas2.height);
+
 const map = new Image();
 map.src = "./assets/PelletTown.png";
 

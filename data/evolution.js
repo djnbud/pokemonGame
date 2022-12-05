@@ -1,5 +1,5 @@
 const evolutions = {
     Emby: {
-        LevelEvolution: { Level: 6, EvolveTo: "Emby2" },
+        LevelEvolution: { Level: 6, EvolveTo: "Draggle" },
     },
 };

@@ -7,6 +7,7 @@ function checkEvolution(pokemon) {
             }
         }
     }
+    return null
 }
 
 function levelEvolutionCHeck(pokemon, levelEvolution) {

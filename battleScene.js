@@ -279,6 +279,9 @@ function prepareBattle(pokeInd) {
 
 function animateBattle() {
     battleAnimationId = window.requestAnimationFrame(animateBattle);
+    c2.clearRect(0, 0, canvas.width, canvas.height);
+    c2.fillStyle = "white";
+    c2.fillRect(0, 0, canvas2.width, canvas2.height);
     battleBackground.draw();
     if (renderedSprites !== undefined) {
         renderedSprites.forEach((sprite) => {
@@ -319,6 +322,7 @@ function endBattle(gainExperience) {
                 playerPokemon = null;
                 renderedSprites = [];
                 evolveSprites = [];
+                canvas2.setAttribute("hidden", "hidden");
                 battle.initiated = false;
                 document.querySelector("#dialogueBox").style.visibility = "hidden";
                 audio.battle.stop();
@@ -398,34 +402,40 @@ function finishExpGain(exp, levelCount) {
 
         canvas2.removeAttribute("hidden");
         postEvolution.opacity = 0;
+
         gsap.to(postEvolution, {
             opacity: 1,
-            repeat: 3,
-            yoyo: true
-        }
-        );
-        gsap.to(preEvolution, {
-            opacity: 0.2,
-            repeat: 3,
+            repeat: 5,
             yoyo: true,
+            duration: 0.3,
             onComplete: () => {
-                waiting = false;
-                preEvolution.opacity = 0;
-                postEvolution.opacity = 1;
-                let prevPokemonId = playerPokemonDetails.id;
-                let evolvedPokemonStats = statCalculator(playerPokemonDetails.details, newPokemonSpec);
-                playerPokemonDetails.details.maxHealth = evolvedPokemonStats.newHealth;
-                playerPokemonDetails.details.attackStat = evolvedPokemonStats.newAttack;
-                playerPokemonDetails.details.defenseStat = evolvedPokemonStats.newDefense;
-                playerPokemonDetails.details.speedStat = evolvedPokemonStats.newSpeed;
-                playerPokemonDetails.details.experience = exp;
-                playerPokemonDetails.id = checkEvol;
-                if (playerPokemonDetails.nickname === prevPokemonId) {
-                    playerPokemonDetails.nickname = checkEvol;
-                }
-                setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
-                document.querySelector("#dialogueBox").innerHTML = prevPokemonId + " evolved into " + checkEvol + "!";
-                canvas2.setAttribute("hidden", "hidden");
+                gsap.to(postEvolution, {
+                    opacity: 1,
+                    repeat: 5,
+                    yoyo: true,
+                    duration: 0.1,
+                    onComplete: () => {
+                        waiting = false;
+                        evolveSprites.splice(0, 1);
+                        preEvolution = null;
+                        postEvolution.opacity = 1;
+                        let prevPokemonId = playerPokemonDetails.id;
+                        let evolvedPokemonStats = statCalculator(playerPokemonDetails.details, newPokemonSpec);
+                        playerPokemonDetails.details.maxHealth = evolvedPokemonStats.newHealth;
+                        playerPokemonDetails.details.attackStat = evolvedPokemonStats.newAttack;
+                        playerPokemonDetails.details.defenseStat = evolvedPokemonStats.newDefense;
+                        playerPokemonDetails.details.speedStat = evolvedPokemonStats.newSpeed;
+                        playerPokemonDetails.details.experience = exp;
+                        playerPokemonDetails.id = checkEvol;
+                        if (playerPokemonDetails.nickname === prevPokemonId) {
+                            playerPokemonDetails.nickname = checkEvol;
+                        }
+                        setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
+                        document.querySelector("#dialogueBox").innerHTML = prevPokemonId + " evolved into " + checkEvol + "!";
+
+
+                    }
+                });
             }
         }
         );
