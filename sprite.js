@@ -1,136 +1,152 @@
 class Sprite {
-    constructor({
-        position,
-        image,
-        frames = {
-            max: 1,
-            hold: 10,
-        },
-        sprites,
-        animate = false,
-        rotation = 0,
-        scale = 1,
-        velocity,
-        direction = "DOWN",
-        evolve = false,
-        evolvePosition,
-    }) {
-        this.position = position;
-        if (evolve === true) {
-            this.position = evolvePosition;
-        }
-        this.image = new Image();
-        this.frames = { ...frames, val: 0, elapsed: 0 };
-        this.image.onload = () => {
-            this.width = (this.image.width / this.frames.max) * scale;
-            this.height = this.image.height * scale;
-        };
-        this.image.src = image.src;
+  constructor({
+    position,
+    image,
+    frames = {
+      max: 1,
+      hold: 10,
+    },
+    sprites,
+    animate = false,
+    rotation = 0,
+    scale = 1,
+    velocity,
+    direction = "DOWN",
+    evolve = false,
+    evolvePosition,
+    enemyImage = null,
+  }) {
+    this.position = position;
+    if (evolve === true) {
+      this.position = evolvePosition;
+    }
+    this.image = new Image();
+    this.frames = { ...frames, val: 0, elapsed: 0 };
+    this.image.onload = () => {
+      this.width = (this.image.width / this.frames.max) * scale;
+      this.height = this.image.height * scale;
+    };
+    if (evolve === true) {
+      this.image.src = enemyImage.src;
+    } else {
+      this.image.src = image.src;
+    }
+    this.animate = animate;
+    this.sprites = sprites;
+    this.opacity = 1;
 
-        this.animate = animate;
-        this.sprites = sprites;
-        this.opacity = 1;
+    this.rotation = rotation;
+    this.scale = scale;
+    this.direction = direction;
+  }
 
-        this.rotation = rotation;
-        this.scale = scale;
-        this.direction = direction;
+  draw() {
+    c.save();
+    //c.translate is needed to convert the roation for canvas so its all relative
+    c.translate(
+      this.position.x + this.width / 2,
+      this.position.y + this.height / 2
+    );
+    c.rotate(this.rotation);
+    c.translate(
+      -this.position.x - this.width / 2,
+      -this.position.y - this.height / 2
+    );
+    c.globalAlpha = this.opacity;
+
+    const crop = {
+      position: {
+        x: this.frames.val * (this.width / this.scale),
+        y: 0,
+      },
+      width: this.image.width / this.frames.max,
+      height: this.image.height,
+    };
+
+    const image = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: this.image.width / this.frames.max,
+      height: this.image.height,
+    };
+
+    c.drawImage(
+      this.image,
+      crop.position.x,
+      crop.position.y,
+      crop.width,
+      crop.height,
+      image.position.x,
+      image.position.y,
+      image.width * this.scale,
+      image.height * this.scale
+    );
+    c.restore();
+    if (!this.animate) return;
+    if (this.frames.max > 1) {
+      this.frames.elapsed++;
     }
 
-    draw() {
-        c.save();
-        //c.translate is needed to convert the roation for canvas so its all relative
-        c.translate(this.position.x + this.width / 2, this.position.y + this.height / 2);
-        c.rotate(this.rotation);
-        c.translate(-this.position.x - this.width / 2, -this.position.y - this.height / 2);
-        c.globalAlpha = this.opacity;
+    if (this.frames.elapsed % this.frames.hold === 0) {
+      if (this.frames.val < this.frames.max - 1) this.frames.val++;
+      else this.frames.val = 0;
+    }
+  }
 
-        const crop = {
-            position: {
-                x: this.frames.val * (this.width / this.scale),
-                y: 0,
-            },
-            width: this.image.width / this.frames.max,
-            height: this.image.height,
-        };
+  draw2() {
+    c2.save();
+    //c.translate is needed to convert the roation for canvas so its all relative
+    c2.translate(
+      this.position.x + this.width / 2,
+      this.position.y + this.height / 2
+    );
+    c2.rotate(this.rotation);
+    c2.translate(
+      -this.position.x - this.width / 2,
+      -this.position.y - this.height / 2
+    );
+    c2.globalAlpha = this.opacity;
 
-        const image = {
-            position: {
-                x: this.position.x,
-                y: this.position.y,
-            },
-            width: this.image.width / this.frames.max,
-            height: this.image.height,
-        };
+    const crop = {
+      position: {
+        x: this.frames.val * (this.width / this.scale),
+        y: 0,
+      },
+      width: this.image.width / this.frames.max,
+      height: this.image.height,
+    };
 
-        c.drawImage(
-            this.image,
-            crop.position.x,
-            crop.position.y,
-            crop.width,
-            crop.height,
-            image.position.x,
-            image.position.y,
-            image.width * this.scale,
-            image.height * this.scale
-        );
-        c.restore();
-        if (!this.animate) return;
-        if (this.frames.max > 1) {
-            this.frames.elapsed++;
-        }
+    const image = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: this.image.width / this.frames.max,
+      height: this.image.height,
+    };
 
-        if (this.frames.elapsed % this.frames.hold === 0) {
-            if (this.frames.val < this.frames.max - 1) this.frames.val++;
-            else this.frames.val = 0;
-        }
+    c2.drawImage(
+      this.image,
+      crop.position.x,
+      crop.position.y,
+      crop.width,
+      crop.height,
+      image.position.x,
+      image.position.y,
+      image.width * this.scale,
+      image.height * this.scale
+    );
+    c2.restore();
+    if (!this.animate) return;
+    if (this.frames.max > 1) {
+      this.frames.elapsed++;
     }
 
-    draw2() {
-        c2.save();
-        //c.translate is needed to convert the roation for canvas so its all relative
-        c2.translate(this.position.x + this.width / 2, this.position.y + this.height / 2);
-        c2.rotate(this.rotation);
-        c2.translate(-this.position.x - this.width / 2, -this.position.y - this.height / 2);
-        c2.globalAlpha = this.opacity;
-
-        const crop = {
-            position: {
-                x: this.frames.val * (this.width / this.scale),
-                y: 0,
-            },
-            width: this.image.width / this.frames.max,
-            height: this.image.height,
-        };
-
-        const image = {
-            position: {
-                x: this.position.x,
-                y: this.position.y,
-            },
-            width: this.image.width / this.frames.max,
-            height: this.image.height,
-        };
-
-        c2.drawImage(
-            this.image,
-            crop.position.x,
-            crop.position.y,
-            crop.width,
-            crop.height,
-            image.position.x,
-            image.position.y,
-            image.width * this.scale,
-            image.height * this.scale
-        );
-        c2.restore();
-        if (!this.animate) return;
-        if (this.frames.max > 1) {
-            this.frames.elapsed++;
-        }
-
-        if (this.frames.elapsed % this.frames.hold === 0) {
-            if (this.frames.val < this.frames.max - 1) this.frames.val++;
-            else this.frames.val = 0;
-        }
+    if (this.frames.elapsed % this.frames.hold === 0) {
+      if (this.frames.val < this.frames.max - 1) this.frames.val++;
+      else this.frames.val = 0;
     }
+  }
 }
