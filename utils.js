@@ -92,7 +92,7 @@ function damageCalculator(attackingPokemon, defendingPokemon, attackingMove) {
     typeEfectiveness = typeChart[attackingMove.type][defendingPokemon.type],
     critAttempt = Math.floor(Math.random() * 24),
     crit = 1,
-    wasCrit = false
+    wasCrit = false;
   STAB = 1;
   if (critAttempt === 1) {
     wasCrit = true;
@@ -140,4 +140,23 @@ function createBackButton(id, appendTo, hide, show) {
     document.querySelector("#" + hide).style.visibility = "hidden";
     document.querySelector("#" + show).style.visibility = "visible";
   });
+}
+
+function spawnRandomPokemon(boundaryId) {
+  let totalSpawnRates = 0;
+  let monSpawns = new Map();
+  for (let i = 0; i < monsterSpawns[boundaryId].length; i++) {
+    monSpawns.set(monsterSpawns[boundaryId][i], {
+      minSpawn: totalSpawnRates + 1,
+      maxSpawn:
+        totalSpawnRates + monsters[monsterSpawns[boundaryId][i]].spawnRate,
+    });
+    totalSpawnRates += monsters[monsterSpawns[boundaryId][i]].spawnRate;
+  }
+  chosenPokemon = Math.floor(Math.random() * totalSpawnRates);
+
+  for (let [key, value] of monSpawns.entries()) {
+    if (value.minSpawn <= chosenPokemon && value.maxSpawn > chosenPokemon)
+      return key;
+  }
 }
