@@ -166,16 +166,23 @@ function enemyAttacks() {
     ];
 
   queue.push(() => {
-    let wasCrit = enemyPokemon.attack({
+    let damageDetails = enemyPokemon.attack({
       attack: randomAttack,
       recipient: playerPokemon,
       renderedSprites: renderedSprites,
     });
-    if (wasCrit === true) {
+    if (damageDetails.wasCrit === true) {
       queue.push(() => {
         document.querySelector("#dialogueBox").style.display = "block";
         document.querySelector("#dialogueBox").innerHTML =
           "It was a Critical Hit!";
+      });
+    }
+    if (damageDetails.hasZeroTypeEffect === true) {
+      queue.push(() => {
+        document.querySelector("#dialogueBox").style.display = "block";
+        document.querySelector("#dialogueBox").innerHTML =
+          enemyPokemon.name + " Missed!";
       });
     }
     let localPoke = getLocalStoredPokemon(),
@@ -543,17 +550,25 @@ function experienceGained() {
 function addAttackQuery(id) {
   document.querySelector(id).addEventListener("click", (e) => {
     const selectedAttack = attacks[e.currentTarget.innerHTML];
-    let wasCrit = playerPokemon.attack({
+    let damageDetails = playerPokemon.attack({
       attack: selectedAttack,
       recipient: enemyPokemon,
       renderedSprites: renderedSprites,
     });
 
-    if (wasCrit === true) {
+    if (damageDetails.wasCrit === true) {
       queue.push(() => {
         document.querySelector("#dialogueBox").style.display = "block";
         document.querySelector("#dialogueBox").innerHTML =
           "It was a Critical Hit!";
+      });
+    }
+
+    if (damageDetails.hasZeroTypeEffect === true) {
+      queue.push(() => {
+        document.querySelector("#dialogueBox").style.display = "block";
+        document.querySelector("#dialogueBox").innerHTML =
+          playerPokemon.name + " Missed!";
       });
     }
 

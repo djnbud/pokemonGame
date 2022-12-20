@@ -19,7 +19,7 @@ const monsters = {
     speedStat: 49,
     baseExpYield: 58,
     catchRate: 58,
-    type: "fire",
+    types: ["fire"],
     spawnRate: 50,
   },
   Broomish: {
@@ -42,7 +42,7 @@ const monsters = {
     speedStat: 62,
     baseExpYield: 58,
     catchRate: 38,
-    type: "ghost",
+    types: ["fire", "ghost"],
   },
   Draggle: {
     position: { x: 280, y: 325 },
@@ -65,7 +65,7 @@ const monsters = {
     speedStat: 28,
     baseExpYield: 35,
     catchRate: 125,
-    type: "dragon",
+    types: ["dragon"],
     spawnRate: 80,
   },
 };
