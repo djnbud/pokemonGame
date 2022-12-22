@@ -181,3 +181,12 @@ function spawnRandomPokemon(boundaryId) {
       return key;
   }
 }
+
+function isPokemonShiny() {
+  let isShiny = false,
+    randNo = Math.floor(Math.random() * 4096);
+  if (randNo === 1) {
+    isShiny = true;
+  }
+  return isShiny;
+}

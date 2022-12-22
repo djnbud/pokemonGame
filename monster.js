@@ -24,17 +24,24 @@ class Monster extends Sprite {
     levelingType,
     experience,
     catchRate,
-    enemyImage,
     attackStat,
     defenseStat,
     speedStat,
     types,
+    shiny,
   }) {
+    let assetLink = "./assets/pokemons/" + name + "/";
     if (isEnemy === true) {
       position = enemyPosition;
-      image = enemyImage;
+      assetLink += "Enemy";
+    }
+    if (shiny === true) {
+      assetLink += "Shiny";
     }
 
+    assetLink += name + ".png";
+    image = { src: "" };
+    image.src = assetLink;
     super({
       position,
       image,
@@ -61,6 +68,7 @@ class Monster extends Sprite {
     this.defenseStat = defenseStat;
     this.speedStat = speedStat;
     this.types = types;
+    this.shiny = shiny;
   }
 
   faint() {

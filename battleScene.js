@@ -237,8 +237,9 @@ function prepareBattle(pokeInd, enemyPoke) {
   if (playerPokemonDetails.details.health > 0) {
     let playerPokemonSpec = monsters[playerPokemonDetails.id];
     playerPokemonSpec.isEnemy = false;
-
+    playerPokemonSpec.shiny = playerPokemonDetails.details.shiny;
     playerPokemon = new Monster(playerPokemonSpec);
+
     playerPokemon.health = playerPokemonDetails.details.health;
     playerPokemon.level = playerPokemonDetails.details.level;
     playerPokemon.attackStat = playerPokemonDetails.details.attackStat;
@@ -271,6 +272,7 @@ function prepareBattle(pokeInd, enemyPoke) {
     //this will be part of picking a random enemy pokemon or at least set it from given pokemon
     let enemyPokemonSpec = monsters[enemyPoke];
     enemyPokemonSpec.isEnemy = true;
+    enemyPokemonSpec.shiny = isPokemonShiny();
     //will need to change so first parameter is the randomly generated pokemon with random level
     let updatedStats = statCalculator(enemyPokemonSpec, enemyPokemonSpec);
 

@@ -13,6 +13,7 @@ function initInventory() {
     nickname: "Emby",
     details: {
       level: 5,
+      shiny: false,
       attacks: [attacks.Tackle, attacks.Fireball],
       health: 45,
       maxHealth: 45,
@@ -110,6 +111,7 @@ function addPokemonToStorage(pokemon, nickname) {
       nickname: nickname,
       details: {
         level: pokemon.level,
+        shiny: pokemon.shiny,
         attacks: pokemon.attacks,
         health: pokemon.maxHealth,
         maxHealth: pokemon.maxHealth,
@@ -125,6 +127,7 @@ function addPokemonToStorage(pokemon, nickname) {
       nickname: nickname,
       details: {
         level: pokemon.level,
+        shiny: pokemon.shiny,
         attacks: pokemon.attacks,
         health: pokemon.maxHealth,
         maxHealth: pokemon.maxHealth,
