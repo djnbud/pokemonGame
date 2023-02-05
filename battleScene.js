@@ -17,6 +17,7 @@ let queue;
 let waiting;
 let usingPotion = false;
 let currentPotionType;
+let localPoke;
 
 function initBattle() {
     document.querySelector("#userInterface").style.display = "block";
@@ -73,7 +74,6 @@ function pokeballsInit() {
 }
 
 function pokemonBagInit() {
-    let localPoke = getLocalStoredPokemon();
     document.querySelector("#pokemonBattleBag").replaceChildren();
     document.querySelector("#pokemonBattleBackDiv").replaceChildren();
 
@@ -146,8 +146,8 @@ function prepareBattle(pokeInd, enemyPoke) {
     enemyPokemon = null;
     playerPokemon = null;
     //get players first pokemon
-    let localPoke = getLocalStoredPokemon(),
-        playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex),
+    localPoke = getLocalStoredPokemon();
+    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex),
         count = 0;
     if (playerPokemonDetails.details.health > 0) {
         let playerPokemonSpec = monsters[playerPokemonDetails.id];
@@ -254,7 +254,7 @@ function endBattle(gainExperience) {
                 document.querySelector("#userInterface").style.display = "none";
                 document.querySelector("#attackType").innerHTML = "Attack Type";
                 document.querySelector("#attackType").style.color = "Black";
-                document.querySelector("#attackDamage").innerHTML = "Attack Damage:";
+                document.querySelector("#attackPower").innerHTML = "Attack Power:";
                 gsap.to("#overlappingDiv", {
                     opacity: 0,
                 });
@@ -310,8 +310,7 @@ function finishExpGain(exp, levelCount) {
     if (newLevel > playerPokemon.level) {
         document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + " reached level " + newLevel;
     }
-    let localPoke = getLocalStoredPokemon(),
-        playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
 
     playerPokemonDetails.details.level = newLevel;
     let playerPokemonSpec = monsters[playerPokemonDetails.id];
@@ -365,8 +364,7 @@ function finishExpGain(exp, levelCount) {
 }
 
 function experienceGained() {
-    let localPoke = getLocalStoredPokemon(),
-        playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
     let newExp = experienceCalculator(playerPokemon, enemyPokemon),
         exp = newExp + playerPokemonDetails.details.experience;
     document.querySelector("#dialogueBox").innerHTML = playerPokemon.name + " gained " + newExp + " experience!";
@@ -404,25 +402,36 @@ function experienceGained() {
 function addAttackQuery(id) {
     document.querySelector(id).addEventListener("click", (e) => {
         const selectedAttack = attacks[e.currentTarget.innerHTML];
-        if (enemyPokemon.speedStat > playerPokemon.speedStat) {
-            enemyAttacks();
-            queue.push(() => {
-                playerAttack(selectedAttack);
-            });
+        let playerFirst = true;
+        if (enemyPokemon.speedStat === playerPokemon.speedStat) {
+            let pickedPokemon = Math.round(Math.random());
+            if (pickedPokemon === 1) {
+                playerFirst = false
+            }
         } else {
+            if (enemyPokemon.speedStat > playerPokemon.speedStat) {
+                playerFirst = false
+            }
+        }
+
+        if (playerFirst === true) {
             playerAttack(selectedAttack);
             queue.push(() => {
                 enemyAttacks();
             });
+        } else {
+            enemyAttacks();
+            queue.push(() => {
+                playerAttack(selectedAttack);
+            });
         }
-
     });
 
     document.querySelector(id).addEventListener("mouseenter", (e) => {
         const selectedAttack = attacks[e.currentTarget.innerHTML];
         document.querySelector("#attackType").innerHTML = selectedAttack.type;
         document.querySelector("#attackType").style.color = selectedAttack.color;
-        document.querySelector("#attackDamage").innerHTML = "Attack Damage: " + selectedAttack.damage;
+        document.querySelector("#attackPower").innerHTML = "Attack Power: " + selectedAttack.power;
     });
 }
 
@@ -447,8 +456,7 @@ function enemyAttacks() {
             document.querySelector("#dialogueBox").innerHTML = enemyPokemon.name + " Missed!";
         });
     }
-    let localPoke = getLocalStoredPokemon(),
-        playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
     if (playerPokemon.health <= 0) {
         playerPokemonDetails.details.health = 0;
     } else {
@@ -600,8 +608,7 @@ function addPokemonBattleBagQuery(id) {
         } else {
             if (id !== "#pokemonBagBattleBtn" + currentSelectedPokemonIndex) {
                 let pokeIndex = parseInt(id.split("#pokemonBagBattleBtn")[1]);
-                let localPoke = getLocalStoredPokemon(),
-                    playerPokemonDetails = localPoke.get(pokeIndex);
+                let playerPokemonDetails = localPoke.get(pokeIndex);
                 if (playerPokemonDetails.details.health > 0) {
                     document.querySelector("#pokemonBagBattleBtn" + currentSelectedPokemonIndex).style.backgroundColor =
                         "";

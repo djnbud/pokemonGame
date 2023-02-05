@@ -95,9 +95,11 @@ function damageCalculator(attackingPokemon, defendingPokemon, attackingMove) {
         wasCrit = true;
         crit = 1.5;
     }
-
-    if (attackingPokemon.type === attackingMove.type) {
-        STAB = 1.5;
+    for (let i = 0; i < attackingPokemon.types.length; i++) {
+        if (attackingPokemon.types[i] === attackingMove.type) {
+            STAB = 1.5;
+            break;
+        }
     }
 
     randomAmnt = randomAmnt / 100;
