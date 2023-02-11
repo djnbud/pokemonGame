@@ -1,26 +1,50 @@
-
-*{font-family: 'Press Start 2P', cursive;
+* {
+    font-family: 'Press Start 2P', cursive;
 }
-body{
+
+body {
     background-color: black;
+}
+
+.wrapper {
+    position: relative;
+    width: 1024px;
+    height: 576px;
+}
+
+.wrapper canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 h1 {
     font-size: 16px;
     margin: 0;
 }
-button {border: 0; cursor: pointer;font-size: 16px}
+
+button {
+    border: 0;
+    cursor: pointer;
+    font-size: 16px
+}
+
 button:hover {
     background-color: #ddd;
 }
-.transition{
+
+.pokemonEmptyBagButton:hover {
+    pointer-events: none;
+}
+
+.transition {
     background-color: black;
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 10;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
 }
