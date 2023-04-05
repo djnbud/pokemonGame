@@ -14,7 +14,7 @@ function initInventory() {
     details: {
       level: 5,
       shiny: false,
-      attacks: [attacks.Tackle, attacks.Fireball],
+      attacks: [attacks.Tackle, attacks.Fireball, attacks.SleepPowder],
       health: 45,
       maxHealth: 45,
       experience: 116,

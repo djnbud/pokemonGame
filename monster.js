@@ -29,6 +29,7 @@ class Monster extends Sprite {
     speedStat,
     types,
     shiny,
+    effects = new Map(),
   }) {
     let assetLink = "./assets/pokemons/" + name + "/";
     if (isEnemy === true) {
@@ -69,6 +70,7 @@ class Monster extends Sprite {
     this.speedStat = speedStat;
     this.types = types;
     this.shiny = shiny;
+    this.effects = effects;
   }
 
   faint() {
@@ -104,9 +106,11 @@ class Monster extends Sprite {
     if (this.isEnemy) {
       rotation = -2.2;
     }
+
     let damageCalc = damageCalculator(this, recipient, attack);
 
     recipient.health -= damageCalc.damage;
+    recipient.effects = damageCalc.effects;
 
     switch (attack.name) {
       case "Fireball":
@@ -149,6 +153,7 @@ class Monster extends Sprite {
         });
         break;
       case "Tackle":
+      case "SleepPowder":
         movementDistance = 20;
         if (this.isEnemy) {
           movementDistance = -20;
