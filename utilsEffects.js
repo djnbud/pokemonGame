@@ -1,24 +1,34 @@
 function effectsChecker(pokemon) {
   let canAttack = true,
-    removeEffects = [];
+    removeEffects = [],
+    currentEffects = [],
+    removedEffect = false;
 
   pokemon.effects.forEach(function (effectProps, effectName) {
     if (effectProps.effectCounter || effectProps.effectCounter === 0) {
       let counterEffs = counterEffects(pokemon.name, effectName, effectProps);
-      canAttack = counterEffs.canAttack;
-      if (counterEffs.removeEff == true) {
+
+      if (counterEffs.canAttack === false) {
+        currentEffects.push(attackEffects[effectName].description);
+      }
+
+      if (canAttack === true) {
+        canAttack = counterEffs.canAttack;
+      }
+      if (counterEffs.removeEffect === true) {
         removeEffects.push(effectName);
       }
     }
   });
 
   if (removeEffects.length > 0) {
+    removedEffect = true;
     removeEffects.forEach((effectName) => {
       removeEffect(pokemon.name, pokemon.effects, effectName);
     });
   }
 
-  return canAttack;
+  return { CanAttack: canAttack, Effects: currentEffects, RemovedEffect: removedEffect };
 }
 
 //checks the effects counter that keeps track of how long the effect is set for
@@ -28,7 +38,7 @@ function counterEffects(pokemonName, effectName, effectProps) {
     removeEff = false;
   if (effectProps.effectCounter > 0 || effectProps.effectCounter === -1) {
     canAttack = false;
-    effectProps.effectCounter = updateEffectCounter(effectCounter);
+    effectProps.effectCounter = updateEffectCounter(effectProps.effectCounter);
   } else {
     removeEff = true;
   }
@@ -37,11 +47,10 @@ function counterEffects(pokemonName, effectName, effectProps) {
 
 function removeEffect(pokemonName, effects, effectName) {
   effects.delete(effectName);
-  queue.push(() => {
-    document.querySelector("#dialogueBox").style.display = "block";
-    document.querySelector("#dialogueBox").innerHTML =
-      pokemonName + " is no longer " + attackEffects[effectName].description;
-  });
+  document.querySelector("#dialogueBox").style.display = "block";
+  document.querySelector("#dialogueBox").innerHTML =
+    pokemonName + " is no longer " + attackEffects[effectName].description;
+
 }
 
 function updateEffectCounter(effectCounter) {

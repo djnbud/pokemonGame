@@ -102,6 +102,9 @@ function damageCalculator(attackingPokemon, defendingPokemon, attackingMove) {
 
     finalDamage.effects = returnedEffects.effects;
     finalDamage.newEffect = returnedEffects.newEffect;
+  } else {
+    finalDamage.effects = defendingPokemon.effects;
+    finalDamage.newEffect = false
   }
   //after calculating the damage return and inflict
   return finalDamage;
@@ -115,8 +118,11 @@ function calculateEffectMove(defendingPokemon, attackingMove) {
   let accuracy = Math.floor(Math.random() * 100);
 
   if (accuracy <= attackEffects[attackingMove.effect].accuracy) {
+    if (effects === undefined) {
+      effects = new Map();
+    }
     if (!effects.has(attackingMove.effect)) {
-      effects.set(attackingMove.effect, getEffectProps(attackingMove.effect));
+      effects.set(attackingMove.effect, getEffectProps(attackEffects[attackingMove.effect]));
       newEffect = true;
     }
   }

@@ -11,7 +11,7 @@ const monsters = {
     health: 45,
     maxHealth: 45,
     experience: 0,
-    attacks: [attacks.Tackle, attacks.Fireball],
+    attacks: [attacks.Tackle, attacks.Fireball, attacks.SleepPowder],
     attackStat: 49,
     defenseStat: 49,
     speedStat: 49,

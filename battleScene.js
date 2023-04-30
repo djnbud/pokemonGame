@@ -490,61 +490,51 @@ function addAttackQuery(id) {
   });
 }
 
-function enemyAttacks() {
-  //check through enemy pokemon active effects
-  let canAttack = true;
-  if (enemyPokemon.effects.size > 0) {
-    canAttack = effectsChecker(enemyPokemon);
-  }
-  //enemy attacks
-  if (canAttack === true) {
-    const randomAttack =
-      enemyPokemon.attacks[
-        Math.floor(Math.random() * enemyPokemon.attacks.length)
-      ];
+function runAttack({ Attack: attack, AttackingPokemon: attackingPokemon, Recipient: recipient, RecipientPokemonDetails: recipientPokemonDetails, IsPlayer: isPlayer }) {
+  let damageDetails = attackingPokemon.attack({
+    attack: attack,
+    recipient: recipient,
+    renderedSprites: renderedSprites
+  });
 
-    let damageDetails = enemyPokemon.attack({
-      attack: randomAttack,
-      recipient: playerPokemon,
-      renderedSprites: renderedSprites,
+  if (damageDetails.wasCrit === true) {
+    queue.push(() => {
+      document.querySelector("#dialogueBox").style.display = "block";
+      document.querySelector("#dialogueBox").innerHTML =
+        "It was a Critical Hit!";
     });
-    if (damageDetails.wasCrit === true) {
-      queue.push(() => {
-        document.querySelector("#dialogueBox").style.display = "block";
-        document.querySelector("#dialogueBox").innerHTML =
-          "It was a Critical Hit!";
-      });
-    }
-    if (damageDetails.newEffect === true) {
-      queue.push(() => {
-        document.querySelector("#dialogueBox").style.display = "block";
-        document.querySelector("#dialogueBox").innerHTML =
-          enemyPokemon.name +
-          " is now " +
-          attackEffects[randomAttack.effect].description;
-      });
-    }
-    if (damageDetails.hasZeroTypeEffect === true) {
-      queue.push(() => {
-        document.querySelector("#dialogueBox").style.display = "block";
-        document.querySelector("#dialogueBox").innerHTML =
-          enemyPokemon.name + " Missed!";
-      });
-    }
-    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
-    if (playerPokemon.health <= 0) {
-      playerPokemonDetails.details.health = 0;
+  }
+  if (damageDetails.newEffect === true) {
+    queue.push(() => {
+      document.querySelector("#dialogueBox").style.display = "block";
+      document.querySelector("#dialogueBox").innerHTML =
+        recipient.name +
+        " is now " +
+        attackEffects[attack.effect].description;
+    });
+  }
+  if (damageDetails.hasZeroTypeEffect === true) {
+    queue.push(() => {
+      document.querySelector("#dialogueBox").style.display = "block";
+      document.querySelector("#dialogueBox").innerHTML =
+        attackingPokemon.name + " Missed!";
+    });
+  }
+  if (isPlayer === false) {
+    if (recipient.health <= 0) {
+      recipientPokemonDetails.details.health = 0;
     } else {
-      playerPokemonDetails.details.health = playerPokemon.health;
+      recipientPokemonDetails.details.health = recipient.health;
     }
-    setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
-    if (playerPokemon.health <= 0) {
-      queue.push(() => {
-        playerPokemon.faint();
-      });
+    setLocalPokemon(currentSelectedPokemonIndex, recipientPokemonDetails);
+  }
+  if (recipient.health <= 0) {
+    queue.push(() => {
+      recipient.faint();
+    });
 
-      //if true then player has at least one pokemon with health > 0
-
+    //if true then player has at least one pokemon with health > 0
+    if (isPlayer === false) {
       if (checkAllLocalPokemonHealth()) {
         //NEED TO MAKE IT SO PLAYER CAN SWITCH POKEMON BY ADDING BAG OPTION SO THIS POINT DISPLAY POKEMON BAG!
         //MAKE SURE TO REMOVE END BATTLE FROM HERE TOO
@@ -567,56 +557,93 @@ function enemyAttacks() {
         healAllLocalPokemon();
         endBattle(false);
       }
+    } else {
+      endBattle(true);
+    }
+  }
+}
+
+function enemyAttacks() {
+  //check through enemy pokemon active effects
+  let currentEnemyEffects = {};
+  let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+  if (enemyPokemon.effects !== undefined && enemyPokemon.effects.size > 0) {
+    currentEnemyEffects = effectsChecker(enemyPokemon);
+  }
+  //enemy attacks
+  if (enemyPokemon.effects === undefined || currentEnemyEffects.CanAttack === true || enemyPokemon.effects.size === 0) {
+    const randomAttack =
+      enemyPokemon.attacks[
+      Math.floor(Math.random() * enemyPokemon.attacks.length)
+      ];
+    if (currentEnemyEffects.RemovedEffect === true) {
+      queue.push(() => {
+        runAttack({ Attack: randomAttack, AttackingPokemon: enemyPokemon, Recipient: playerPokemon, RecipientPokemonDetails: playerPokemonDetails, IsPlayer: false });
+      });
+    } else {
+      runAttack({ Attack: randomAttack, AttackingPokemon: enemyPokemon, Recipient: playerPokemon, RecipientPokemonDetails: playerPokemonDetails, IsPlayer: false });
+    }
+
+  } else {
+    let addedDialogue = false;
+    for (let i = 0; i < currentEnemyEffects.Effects.length; i++) {
+      if (queue.length > 0 || addedDialogue === true) {
+        queue.push(() => {
+          document.querySelector("#dialogueBox").style.display = "block";
+          document.querySelector("#dialogueBox").innerHTML =
+            enemyPokemon.name +
+            " is " +
+            currentEnemyEffects.Effects[i];
+        });
+      } else {
+        addedDialogue = true
+        document.querySelector("#dialogueBox").style.display = "block";
+        document.querySelector("#dialogueBox").innerHTML =
+          enemyPokemon.name +
+          " is " +
+          currentEnemyEffects.Effects[i];
+      }
+
     }
   }
 }
 
 function playerAttack(selectedAttack) {
   //check through enemy pokemon active effects
-  let canAttack = true;
-  if (playerPokemon.effects.size > 0) {
-    canAttack = effectsChecker(playerPokemon);
+  let currentPlayerEffects = {};
+  if (playerPokemon.effects !== undefined && playerPokemon.effects.size > 0) {
+    currentPlayerEffects = effectsChecker(playerPokemon);
   }
   //enemy attacks
-  if (canAttack === true) {
-    let damageDetails = playerPokemon.attack({
-      attack: selectedAttack,
-      recipient: enemyPokemon,
-      renderedSprites: renderedSprites,
-    });
+  if (playerPokemon.effects === undefined || currentPlayerEffects.CanAttack === true || playerPokemon.effects.size === 0) {
 
-    if (damageDetails.wasCrit === true) {
+    if (currentPlayerEffects.RemovedEffect === true) {
       queue.push(() => {
+        runAttack({ Attack: selectedAttack, AttackingPokemon: playerPokemon, Recipient: enemyPokemon, RecipientPokemonDetails: null, IsPlayer: true });
+      });
+    } else {
+      runAttack({ Attack: selectedAttack, AttackingPokemon: playerPokemon, Recipient: enemyPokemon, RecipientPokemonDetails: null, IsPlayer: true });
+    }
+  }
+  else {
+    let addedDialogue = false;
+    for (let i = 0; i < currentPlayerEffects.Effects.length; i++) {
+      if (queue.length > 0 || addedDialogue === true) {
+        queue.push(() => {
+          document.querySelector("#dialogueBox").style.display = "block";
+          document.querySelector("#dialogueBox").innerHTML =
+            playerPokemon.name +
+            " is " +
+            currentPlayerEffects.Effects[i];
+        });
+      } else {
+        addedDialogue = true;
         document.querySelector("#dialogueBox").style.display = "block";
         document.querySelector("#dialogueBox").innerHTML =
-          "It was a Critical Hit!";
-      });
-    }
-
-    if (damageDetails.newEffect === true) {
-      queue.push(() => {
-        document.querySelector("#dialogueBox").style.display = "block";
-        document.querySelector("#dialogueBox").innerHTML =
-          enemyPokemon.name +
-          " is now " +
-          attackEffects[selectedAttack.effect].description;
-      });
-    }
-
-    if (damageDetails.hasZeroTypeEffect === true) {
-      queue.push(() => {
-        document.querySelector("#dialogueBox").style.display = "block";
-        document.querySelector("#dialogueBox").innerHTML =
-          playerPokemon.name + " Missed!";
-      });
-    }
-
-    if (enemyPokemon.health <= 0) {
-      queue.push(() => {
-        enemyPokemon.faint();
-      });
-
-      endBattle(true);
+          playerPokemon.name +
+          " is " +
+          currentPlayerEffects.Effects[i];
+      }
     }
   }
 }
