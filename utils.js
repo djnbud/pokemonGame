@@ -200,11 +200,11 @@ function damageMove(attackingPokemon, defendingPokemon, attackingMove) {
   });
 }
 
-function createBlankSpace(id, appendTo) {
+function createBlankSpace(id, appendTo, width = "100%", height = "100%") {
   const button = document.createElement("div");
   button.id = id;
-  button.width = "100%";
-  button.height = "100%";
+  button.width = width;
+  button.height = height;
   button.animate = false;
 
   document.querySelector(appendTo).append(button);
@@ -247,4 +247,16 @@ function isPokemonShiny() {
     isShiny = true;
   }
   return isShiny;
+}
+
+function getPokemonAsset(name, isEnemy, shiny) {
+  let assetLink = "./assets/pokemons/" + name + "/";
+  if (isEnemy === true) {
+    assetLink += "Enemy";
+  }
+  if (shiny === true) {
+    assetLink += "Shiny";
+  }
+
+  return assetLink += name + ".png";
 }

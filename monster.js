@@ -31,16 +31,11 @@ class Monster extends Sprite {
     shiny,
     effects = new Map(),
   }) {
-    let assetLink = "./assets/pokemons/" + name + "/";
     if (isEnemy === true) {
       position = enemyPosition;
-      assetLink += "Enemy";
     }
-    if (shiny === true) {
-      assetLink += "Shiny";
-    }
+    let assetLink = getPokemonAsset(name, isEnemy, shiny)
 
-    assetLink += name + ".png";
     image = { src: "" };
     image.src = assetLink;
     super({

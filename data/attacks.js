@@ -1,9 +1,9 @@
 const attacks = {
-  Tackle: { name: "Tackle", type: "normal", power: 40, color: "black" },
-  Fireball: { name: "Fireball", type: "fire", power: 40, color: "red" },
+  Tackle: { name: "Tackle", type: "Normal", power: 40, color: "black" },
+  Fireball: { name: "Fireball", type: "Fire", power: 40, color: "red" },
   SleepPowder: {
     name: "SleepPowder",
-    type: "grass",
+    type: "Grass",
     power: 0,
     color: "green",
     effect: "Sleep",

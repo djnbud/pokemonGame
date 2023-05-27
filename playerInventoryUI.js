@@ -68,13 +68,35 @@ function showPokemonBag() {
     for (let i = 0; i < 6; i++) {
         let currentPokemon = localPokemon.get(i);
         if (currentPokemon !== undefined) {
+
+            /*const pokeBagDetailsContainer = document.createElement("div");
+            pokeBagDetailsContainer.id = "pokeBagDetailsContainer" + i;
+            document.querySelector("#pokemonBagView").append(pokeBagDetailsContainer);*/
+
             const button = document.createElement("button");
             button.id = "pokemonBag" + i;
-            button.innerHTML = currentPokemon.id;
+            button.style.height = 100;
+            //button.innerHTML = currentPokemon.id;
             document.querySelector("#pokemonBagView").append(button);
+
+            const pokemonImg = document.createElement("img");
+            pokemonImg.id = "pokemonBagImg" + i;
+            let assetLink = getPokemonAsset(currentPokemon.id, true, currentPokemon.details.shiny)
+            pokemonImg.src = assetLink;
+            pokemonImg.style.width = 100;
+            pokemonImg.style.float = "left";
+            document.querySelector("#pokemonBag" + i).append(pokemonImg);
+
+            var pokeName = document.createElement("div");
+            pokeName.id = "pokemonType" + i;
+            pokeName.className = "pokemonDescription";
+            let str = "Name: " + currentPokemon.nickname + "\n Types: " + monsters[currentPokemon.id].types + "\n Level: " + currentPokemon.details.level;
+            pokeName.innerText = str;
+            button.appendChild(pokeName);
             addPokemonSwapQuery("#" + button.id);
+
         } else {
-            createBlankSpace("pokemonBag" + i, "#pokemonBagView");
+            createBlankSpace("pokeBagDetailsContainer" + i, "#pokemonBagView");
         }
     }
 }

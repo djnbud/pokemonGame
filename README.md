@@ -5,7 +5,8 @@ To run simply navigate to index.html e.g. file:///C:/PokemonGame/index.html
 To add new attacks update data/attacks.js, data.monsters.js and then the function attack in monster.js. The function is how the attack looks
 
 To Do:
-Implement attack effects such as stun, sleep etc
+Implement attack effects such as stun, sleep etc SLEEP IMPLEMENTED (NOT GRAPHICALLY)
+Create pokedex version image of each pokemon.
 Update inventory so pokemon show their stats and a image
 Implement Pokedex to track pokemon caught
 
@@ -19,3 +20,4 @@ Maybe look at moving game to multiplayer version using node.js?
 
 Known Bugs:
 Fix experience bar where goes up incorrectly
+If pokemon dies with another pokemon in bag it doesnt switch and enemy pokemon non stop attacks
