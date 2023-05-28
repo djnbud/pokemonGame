@@ -3,6 +3,7 @@ let playerPokeballs = new Map();
 let storedPokemon = new Map();
 let localPokemon = new Map();
 let localItems = new Map();
+let pokemonSeenCaught = new Map();
 
 function initInventory() {
   //normally here we will check what player has in inventory such as potions and pokeballs
@@ -28,6 +29,8 @@ function initInventory() {
     startPokemon.details,
     monsters[startPokemon.id]
   );
+
+  pokemonSeenCaught.set("Emby", { seen: getPokeDate(), caught: getPokeDate() });
 
   startPokemon.details.maxHealth = updatedPlayerPokemonStats.newHealth;
   startPokemon.details.health = updatedPlayerPokemonStats.newHealth;
@@ -83,6 +86,21 @@ function setItem(id, details) {
   localItems.set(id, details);
 }
 
+function seenPokemon(id) {
+  if (!pokemonSeenCaught.has(id)) {
+    pokemonSeenCaught.set(id, { seen: getPokeDate(), caught: null });
+  }
+}
+
+function updateSeenCaught(id) {
+  if (!pokemonSeenCaught.has(id)) {
+    pokemonSeenCaught.set(id, { seen: getPokeDate(), caught: getPokeDate() });
+  } else {
+    let caughtPokemon = pokemonSeenCaught.get(id);
+    pokemonSeenCaught.set(id, { seen: caughtPokemon.seen, caught: getPokeDate() });
+  }
+}
+
 function checkAllLocalPokemonHealth() {
   let localPokemon = storedPokemon.get("localStorage");
   for (let [key, value] of localPokemon) {
@@ -103,6 +121,8 @@ function healAllLocalPokemon() {
 
 function addPokemonToStorage(pokemon, nickname) {
   //when retrieved a new pokemon check if room in storage
+  updateSeenCaught(pokemon.name);
+
   let localStorage = getLocalStoredPokemon();
   let pcStorage = getPcStoredPokemon();
   if (localStorage.size < 6) {

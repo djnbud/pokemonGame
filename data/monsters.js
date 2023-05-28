@@ -1,5 +1,6 @@
 const monsters = {
   Emby: {
+    noId: 1,
     position: { x: 280, y: 325 },
     enemyPosition: { x: 800, y: 100 },
     evolvePosition: { x: 500, y: 200 },
@@ -8,6 +9,7 @@ const monsters = {
     name: "Emby",
     level: 1,
     levelingType: "mediumFast",
+    desc: "Even through rain its flame body does not extinguish",
     health: 45,
     maxHealth: 45,
     experience: 0,
@@ -21,6 +23,7 @@ const monsters = {
     spawnRate: 50,
   },
   Broomish: {
+    noId: 2,
     position: { x: 280, y: 225 },
     enemyPosition: { x: 800, y: 100 },
     evolvePosition: { x: 500, y: 150 },
@@ -29,6 +32,7 @@ const monsters = {
     name: "Broomish",
     level: 1,
     levelingType: "mediumFast",
+    desc: "If well trained it can also be used to clean around the house without setting it a blaze",
     health: 60,
     maxHealth: 60,
     experience: 0,
@@ -41,6 +45,7 @@ const monsters = {
     types: ["Fire", "Ghost"],
   },
   Draggle: {
+    noId: 3,
     position: { x: 280, y: 325 },
     enemyPosition: { x: 800, y: 100 },
     evolvePosition: { x: 500, y: 200 },
@@ -50,6 +55,7 @@ const monsters = {
     name: "Draggle",
     level: 3,
     levelingType: "fast",
+    desc: "One of the smallest dragons in the known pokemon world",
     health: 45,
     maxHealth: 45,
     experience: 0,

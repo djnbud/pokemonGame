@@ -71,7 +71,20 @@
                         <h1>Close Bag</h1>
                     </button>
                 </div>
-                <div id="pokemonBagView" style="top: 0; bottom: 0; display: grid; grid-auto-rows: 1fr; width: 75%">
+                <div id="pokemonBagView">
+                </div>
+                <div id="pokedex">
+                    <div id="pokemonDetails">
+                        <div id="pokedexPokemonName"></div>
+                        <img id="pokemonImg" src="./assets/pokemons/Emby/PokedexEmby.png">
+                        <div id="pokemonTypes">
+                            <span class="typeBox fire">Fire</span>
+                        </div>
+                        <div id="pokemonDescription"></div>
+                        <div id="seen"></div>
+                        <div id="caught"></div>
+                    </div>
+                    <div id="pokemonList"></div>
                 </div>
             </div>
         </div>
@@ -335,6 +348,7 @@
 <script src="animate.js"></script>
 <script src="boundary.js"></script>
 <script src="inventory.js"></script>
+<script src="pokedex.js"></script>
 <script src="playerInventoryUI.js"></script>
 <script src="index.js"></script>
 <script src="battleScene.js"></script>

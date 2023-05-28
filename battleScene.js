@@ -205,6 +205,7 @@ function prepareBattle(pokeInd, enemyPoke) {
     let enemyPokemonSpec = monsters[enemyPoke];
     enemyPokemonSpec.isEnemy = true;
     enemyPokemonSpec.shiny = isPokemonShiny();
+    seenPokemon(enemyPokemonSpec.name);
     //will need to change so first parameter is the randomly generated pokemon with random level
     let updatedStats = statCalculator(enemyPokemonSpec, enemyPokemonSpec);
 

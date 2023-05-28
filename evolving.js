@@ -57,6 +57,6 @@ function evolutionStatUpdate(
         playerPokemonDetails.nickname = checkEvol;
     }
     setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
-
+    updateSeenCaught(checkEvol);
     oncomplete && oncomplete();
 }

@@ -249,8 +249,12 @@ function isPokemonShiny() {
   return isShiny;
 }
 
-function getPokemonAsset(name, isEnemy, shiny) {
+function getPokemonAsset(name, isEnemy, shiny, pokedex) {
   let assetLink = "./assets/pokemons/" + name + "/";
+
+  if (pokedex === true) {
+    assetLink += "Pokedex";
+  }
   if (isEnemy === true) {
     assetLink += "Enemy";
   }
@@ -259,4 +263,18 @@ function getPokemonAsset(name, isEnemy, shiny) {
   }
 
   return assetLink += name + ".png";
+}
+
+function getPokeDate() {
+  const date = new Date();
+
+  let currentDay = String(date.getDate()).padStart(2, '0');
+
+  let currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+
+  let currentYear = date.getFullYear();
+
+  // we will display the date as DD-MM-YYYY 
+
+  return `${currentDay}-${currentMonth}-${currentYear}`;
 }
