@@ -1,20 +1,30 @@
+let previouslySelectedUi = "pokemonPlayerInv";
+
 function initPlayerInv() {
     document.querySelector("#pokemonPlayerInv").addEventListener("click", (e) => {
         showPokemonBag();
+        setButtonStyle("pokemonPlayerInv");
     });
-    document.querySelector("#pokemonStoragePlayerInv").addEventListener("click", (e) => { });
+    document.querySelector("#pokemonStoragePlayerInv").addEventListener("click", (e) => {
+        setButtonStyle("pokemonStoragePlayerInv");
+    });
 
     document.querySelector("#pokedexPlayerInv").addEventListener("click", (e) => {
         showPokedex();
+        setButtonStyle("pokedexPlayerInv");
     });
     document.querySelector("#itemsPlayerInv").addEventListener("click", (e) => {
         showItemBag();
+        setButtonStyle("itemsPlayerInv");
     });
     document.querySelector("#closePlayerInv").addEventListener("click", (e) => {
         closePlayerInventory();
+        setButtonStyle("closePlayerInv");
     });
     keys.i.pressed = false;
     playerInventory();
+    showPokemonBag();
+    setButtonStyle("pokemonPlayerInv");
 }
 
 function playerInventory() {
@@ -24,6 +34,12 @@ function playerInventory() {
         window.cancelAnimationFrame(animationId);
         closePlayerInventory();
     }
+}
+
+function setButtonStyle(id) {
+    document.getElementById(previouslySelectedUi).style.background = "white";
+    document.getElementById(id).style.background = "rgb(211, 47, 47)";
+    previouslySelectedUi = id;
 }
 
 function closePlayerInventory() {
@@ -117,20 +133,81 @@ function showPokemonBag() {
             pokemonImg.src = assetLink;
             pokemonImg.style.width = 100;
             pokemonImg.style.float = "left";
-            document.querySelector("#pokemonBag" + i).append(pokemonImg);
+            button.appendChild(pokemonImg);
 
-            var pokeName = document.createElement("div");
-            pokeName.id = "pokemonType" + i;
-            pokeName.className = "pokemonDescription";
-            let str = "Name: " + currentPokemon.nickname + "\n Types: " + monsters[currentPokemon.id].types + "\n Level: " + currentPokemon.details.level;
-            pokeName.innerText = str;
-            button.appendChild(pokeName);
+            var pokeGridText = document.createElement("div");
+            pokeGridText.id = "pokeGridText" + i;
+            pokeGridText.className = "invGridFit";
+
+            popGridCell(pokeGridText, "pokeNameText" + i, "pokemonInvDescription", "Name:")
+
+            popGridCell(pokeGridText, "pokeNameValue" + i, "pokemonInvDescription", currentPokemon.nickname)
+
+            popGridCell(pokeGridText, "pokeAttackText" + i, "pokemonInvDescription", "Attack:")
+
+            popGridCell(pokeGridText, "pokeAttackValue" + i, "pokemonInvDescription", currentPokemon.details.attackStat)
+
+            popGridCell(pokeGridText, "pokeTypesText" + i, "pokemonInvDescription", "Types:")
+
+            popGridCell(pokeGridText, "pokeTypesValue" + i, "pokemonInvDescription", monsters[currentPokemon.id].types)
+
+            popGridCell(pokeGridText, "pokeDefenseText" + i, "pokemonInvDescription", "Defense:")
+
+            popGridCell(pokeGridText, "pokeDefenseValue" + i, "pokemonInvDescription", currentPokemon.details.defenseStat)
+
+            popGridCell(pokeGridText, "pokeLevelText" + i, "pokemonInvDescription", "Level:")
+
+            popGridCell(pokeGridText, "pokeLevelText" + i, "pokemonInvDescription", currentPokemon.details.level)
+
+            popGridCell(pokeGridText, "pokeSpeedText" + i, "pokemonInvDescription", "Speed:")
+
+            popGridCell(pokeGridText, "pokeSpeedValue" + i, "pokemonInvDescription", currentPokemon.details.speedStat)
+
+            popGridCell(pokeGridText, "pokeHpText" + i, "pokemonInvDescription", "HP:")
+
+            var pokeHpGridFit = document.createElement("div");
+            pokeHpGridFit.id = "pokemonHpGridFit" + i;
+            pokeHpGridFit.className = "hpGridFitInv";
+
+            var pokeHpContainer = document.createElement("div");
+            pokeHpContainer.id = "pokemonHpContainer" + i;
+            pokeHpContainer.className = "hpContainer";
+
+            var pokeHpBg = document.createElement("div");
+            pokeHpBg.id = "pokemonHpBg" + i;
+            pokeHpBg.className = "hpBarBg";
+
+            var pokeHp = document.createElement("div");
+            pokeHp.id = "pokemonHp" + i;
+            pokeHp.className = "hpBar";
+
+            let healthPercentage =
+                (currentPokemon.details.health / currentPokemon.details.maxHealth) * 100;
+            pokeHp.width = healthPercentage + "%";
+            pokeHpContainer.appendChild(pokeHpBg);
+            pokeHpContainer.appendChild(pokeHp);
+
+            pokeHpGridFit.appendChild(pokeHpContainer);
+
+            pokeGridText.appendChild(pokeHpGridFit);
+
+            button.appendChild(pokeGridText);
+
             addPokemonSwapQuery("#" + button.id);
 
         } else {
             createBlankSpace("pokeBagDetailsContainer" + i, "#pokemonBagView");
         }
     }
+}
+
+function popGridCell(grid, name, classN, value) {
+    var gridCell = document.createElement("div");
+    gridCell.id = name;
+    gridCell.className = classN
+    gridCell.innerHTML = value
+    grid.appendChild(gridCell);
+    resize_to_fit(11, gridCell, 13, 8);
 }
 
 function addPokemonSwapQuery(id) {

@@ -18,7 +18,7 @@ const monsters = {
     defenseStat: 49,
     speedStat: 49,
     baseExpYield: 58,
-    catchRate: 58,
+    catchRate: 108,
     types: ["Fire"],
     spawnRate: 50,
   },

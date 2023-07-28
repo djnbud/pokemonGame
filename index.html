@@ -90,75 +90,38 @@
         </div>
         <div id="userInterface" style="display: none">
             <!-- Health Bar of Enemy Pokemon-->
-            <div style="
-                    background-color: white;
-                    width: 250px;
-                    position: absolute;
-                    top: 50px;
-                    left: 50px;
-                    border: 4px black solid;
-                    padding: 12px;
-                ">
+            <div class="enemyBattleInfo">
                 <h1 id="enemyPokemonName"></h1>
-                <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <div class="hpGridFit">
                     <h1>LVL</h1>
                     <h1 id="enemyPokemonLevel"></h1>
                 </div>
-                <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <div class="hpGridFit">
                     <h1>HP</h1>
-                    <div id="enemyHPContainer" style="position: relative; bottom: 5px">
-                        <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
-                        <div id="EnemyHealthBar" style="
-                                height: 5px;
-                                background-color: green;
-                                position: absolute;
-                                top: 10px;
-                                left: 0;
-                                right: 0;
-                            "></div>
+                    <div id="enemyHPContainer" class="hpContainer">
+                        <div class="hpBarBg"></div>
+                        <div id="EnemyHealthBar" class="hpBar"></div>
                     </div>
                 </div>
             </div>
 
             <!-- Health Bar of Player Pokemon-->
-            <div style="
-                    background-color: white;
-                    width: 250px;
-                    position: absolute;
-                    top: 330px;
-                    right: 50px;
-                    border: 4px black solid;
-                    padding: 12px;
-                ">
+            <div class="playerBattleInfo">
                 <h1 id="playerPokemonName"></h1>
-                <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <div class="hpGridFit">
                     <h1>LVL</h1>
                     <h1 id="playerPokemonLevel"></h1>
                 </div>
-                <div style="position: relative; display: grid; grid-template-columns: 20% 80%; margin-top: 5px">
+                <div class="hpGridFit">
                     <h1>HP</h1>
-                    <div id="playerHPContainer" style="position: relative; bottom: 5px">
-                        <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
-                        <div id="PlayerHealthBar" style="
-                                height: 5px;
-                                background-color: green;
-                                position: absolute;
-                                top: 10px;
-                                left: 0;
-                                right: 0;
-                            "></div>
+                    <div id="playerHPContainer" class="hpContainer">
+                        <div class="hpBarBg"></div>
+                        <div id="PlayerHealthBar" class="hpBar"></div>
                     </div>
                     <h1>Exp</h1>
-                    <div id="playerExpContainer" style="position: relative; bottom: 5px">
-                        <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
-                        <div id="PlayerExpBar" style="
-                                height: 5px;
-                                background-color: blue;
-                                position: absolute;
-                                top: 10px;
-                                left: 0;
-                                right: 0;
-                            "></div>
+                    <div id="playerExpContainer" class="hpContainer">
+                        <div class="hpBarBg"></div>
+                        <div id="PlayerExpBar" class="xpBar"></div>
                     </div>
                 </div>
             </div>

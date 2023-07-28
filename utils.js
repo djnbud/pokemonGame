@@ -278,3 +278,11 @@ function getPokeDate() {
 
   return `${currentDay}-${currentMonth}-${currentYear}`;
 }
+
+function resize_to_fit(maxLength, object, baseFontSize, minFontSize) {
+  if (object.textContent.length > maxLength) {
+    const scalingFactor = 1 - Math.min(1 / maxLength * object.textContent.length, 1);
+    let resizedFontSize = Math.ceil(Math.max(scalingFactor * (baseFontSize - minFontSize) + minFontSize, minFontSize));
+    object.style.fontSize = `${resizedFontSize}px`;
+  }
+}
