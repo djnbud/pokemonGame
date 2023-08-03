@@ -163,35 +163,20 @@ function showPokemonBag() {
 
             popGridCell(pokeGridText, "pokeSpeedValue" + i, "pokemonInvDescription", currentPokemon.details.speedStat)
 
-            popGridCell(pokeGridText, "pokeHpText" + i, "pokemonInvDescription", "HP:")
-
-            var pokeHpGridFit = document.createElement("div");
-            pokeHpGridFit.id = "pokemonHpGridFit" + i;
-            pokeHpGridFit.className = "hpGridFitInv";
-
-            var pokeHpContainer = document.createElement("div");
-            pokeHpContainer.id = "pokemonHpContainer" + i;
-            pokeHpContainer.className = "hpContainer";
-
-            var pokeHpBg = document.createElement("div");
-            pokeHpBg.id = "pokemonHpBg" + i;
-            pokeHpBg.className = "hpBarBg";
-
-            var pokeHp = document.createElement("div");
-            pokeHp.id = "pokemonHp" + i;
-            pokeHp.className = "hpBar";
-
-            let healthPercentage =
-                (currentPokemon.details.health / currentPokemon.details.maxHealth) * 100;
-            pokeHp.width = healthPercentage + "%";
-            pokeHpContainer.appendChild(pokeHpBg);
-            pokeHpContainer.appendChild(pokeHp);
-
-            pokeHpGridFit.appendChild(pokeHpContainer);
-
-            pokeGridText.appendChild(pokeHpGridFit);
+            hpExpBars(pokeGridText, i);
 
             button.appendChild(pokeGridText);
+
+            let healthPercentage = (currentPokemon.details.health / currentPokemon.details.maxHealth) * 100;
+
+            document.getElementById("pokemonHpContainer" + i).style.width = 80 + "%";
+            document.getElementById("pokemonHp" + i).style.width = healthPercentage + "%";
+            let nextLvl = currentPokemon.details.level + 1;    
+            let nextLevelNeeded = experienceLevelGrid[nextLvl][monsters[currentPokemon.id].levelingType];
+            let expPercentage = (currentPokemon.details.experience / nextLevelNeeded) * 100;
+
+            document.getElementById("pokemonExpContainer" + i).style.width = 80 + "%";
+            document.getElementById("pokemonExp" + i).style.width = expPercentage + "%";
 
             addPokemonSwapQuery("#" + button.id);
 
@@ -200,7 +185,7 @@ function showPokemonBag() {
         }
     }
 }
-
+//populate grid cell
 function popGridCell(grid, name, classN, value) {
     var gridCell = document.createElement("div");
     gridCell.id = name;
@@ -208,6 +193,64 @@ function popGridCell(grid, name, classN, value) {
     gridCell.innerHTML = value
     grid.appendChild(gridCell);
     resize_to_fit(11, gridCell, 13, 8);
+}
+
+function hpExpBars(pokeGridText, index){
+    //hp
+    popGridCell(pokeGridText, "pokeHpText" + index, "pokemonInvDescription", "HP:")
+
+    var pokeHpGridFit = document.createElement("div");
+    pokeHpGridFit.id = "pokemonHpGridFit" + index;
+    pokeHpGridFit.className = "hpGridFitInv";
+
+    var pokeHpContainer = document.createElement("div");
+    pokeHpContainer.id = "pokemonHpContainer" + index;
+    pokeHpContainer.className = "hpContainer";
+
+    var pokeHpBg = document.createElement("div");
+    pokeHpBg.id = "pokemonHpBg" + index;
+    pokeHpBg.className = "hpBarBg";
+
+    var pokeHp = document.createElement("div");
+    pokeHp.id = "pokemonHp" + index;
+    pokeHp.className = "hpBar";
+
+    
+    pokeHpContainer.appendChild(pokeHpBg);
+    pokeHpContainer.appendChild(pokeHp);
+
+    pokeHpGridFit.appendChild(pokeHpContainer);
+
+    pokeGridText.appendChild(pokeHpGridFit);
+
+    //exp
+    popGridCell(pokeGridText, "pokeExpText" + index, "pokemonInvDescription", "EXP:")
+
+    var pokeExpGridFit = document.createElement("div");
+    pokeExpGridFit.id = "pokemonExpGridFit" + index;
+    pokeExpGridFit.className = "hpGridFitInv";
+
+    var pokeExpContainer = document.createElement("div");
+    pokeExpContainer.id = "pokemonExpContainer" + index;
+    pokeExpContainer.className = "hpContainer";
+
+    var pokeExpBg = document.createElement("div");
+    pokeExpBg.id = "pokemonExpBg" + index;
+    pokeExpBg.className = "hpBarBg";
+
+    var pokeExp = document.createElement("div");
+    pokeExp.id = "pokemonExp" + index;
+    pokeExp.className = "xpBar";
+
+    
+    pokeExpContainer.appendChild(pokeExpBg);
+    pokeExpContainer.appendChild(pokeExp);
+
+    pokeExpGridFit.appendChild(pokeExpContainer);
+
+    pokeGridText.appendChild(pokeExpGridFit);
+
+    
 }
 
 function addPokemonSwapQuery(id) {
