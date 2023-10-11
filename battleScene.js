@@ -432,7 +432,7 @@ function experienceGained() {
       playerNextLevel = playerPokemon.level + levelCount,
       nextExpPercentage = (exp / nextLevelNeeded) * 100;
 
-    increaseExpBar(100, levelCount, exp, playerNextLevel, finishExpGain);
+    increaseExpBar(100, levelCount, exp, nextLevelNeeded, finishExpGain);
   } else {
     if (expPercentage === 100) {
       gsap.to("#PlayerExpBar", {
