@@ -193,14 +193,15 @@ function prepareBattle(pokeInd, enemyPoke) {
       width: expPercentage + "%",
     });
     document.querySelector("#attacksBox").replaceChildren();
-    playerPokemonDetails.details.attacks.forEach((attack) => {
+    for (const [key, value] of Object.entries(playerPokemonDetails.details.attacks)) {
+
       const button = document.createElement("button");
       button.id = "pokemonAttackBtn" + count;
-      button.innerHTML = attack.name;
+      button.innerHTML = attacks[key].name;
       document.querySelector("#attacksBox").append(button);
       addAttackQuery("#pokemonAttackBtn" + count);
       count++;
-    });
+    };
     //this will be part of picking a random enemy pokemon or at least set it from given pokemon
     let enemyPokemonSpec = monsters[enemyPoke];
     enemyPokemonSpec.isEnemy = true;
@@ -456,38 +457,43 @@ function experienceGained() {
 
 function addAttackQuery(id) {
   document.querySelector(id).addEventListener("click", (e) => {
-    const selectedAttack = attacks[e.currentTarget.innerHTML];
-    let playerFirst = true;
-    if (enemyPokemon.speedStat === playerPokemon.speedStat) {
-      let pickedPokemon = Math.round(Math.random());
-      if (pickedPokemon === 1) {
-        playerFirst = false;
+    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+    if (playerPokemonDetails.details.attacks[e.currentTarget.innerHTML] > 0) {
+      playerPokemonDetails.details.attacks[e.currentTarget.innerHTML] -= 1;
+      const selectedAttack = attacks[e.currentTarget.innerHTML];
+      let playerFirst = true;
+      if (enemyPokemon.speedStat === playerPokemon.speedStat) {
+        let pickedPokemon = Math.round(Math.random());
+        if (pickedPokemon === 1) {
+          playerFirst = false;
+        }
+      } else {
+        if (enemyPokemon.speedStat > playerPokemon.speedStat) {
+          playerFirst = false;
+        }
       }
-    } else {
-      if (enemyPokemon.speedStat > playerPokemon.speedStat) {
-        playerFirst = false;
-      }
-    }
 
-    if (playerFirst === true) {
-      playerAttack(selectedAttack);
-      queue.push(() => {
-        enemyAttacks();
-      });
-    } else {
-      enemyAttacks();
-      queue.push(() => {
+      if (playerFirst === true) {
         playerAttack(selectedAttack);
-      });
+        queue.push(() => {
+          enemyAttacks();
+        });
+      } else {
+        enemyAttacks();
+        queue.push(() => {
+          playerAttack(selectedAttack);
+        });
+      }
     }
   });
 
   document.querySelector(id).addEventListener("mouseenter", (e) => {
+    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
     const selectedAttack = attacks[e.currentTarget.innerHTML];
     document.querySelector("#attackType").innerHTML = selectedAttack.type;
     document.querySelector("#attackType").style.color = selectedAttack.color;
     document.querySelector("#attackPower").innerHTML =
-      "Attack Power: " + selectedAttack.power;
+      "Attack Power: " + selectedAttack.power + "<br>" + "PP: " + playerPokemonDetails.details.attacks[e.currentTarget.innerHTML];
   });
 }
 
