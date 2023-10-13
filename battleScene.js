@@ -458,9 +458,16 @@ function experienceGained() {
 function addAttackQuery(id) {
   document.querySelector(id).addEventListener("click", (e) => {
     let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+    //Check if attack has any PP left
     if (playerPokemonDetails.details.attacks[e.currentTarget.innerHTML] > 0) {
       playerPokemonDetails.details.attacks[e.currentTarget.innerHTML] -= 1;
+
       const selectedAttack = attacks[e.currentTarget.innerHTML];
+      document.querySelector("#attackType").innerHTML = selectedAttack.type;
+      document.querySelector("#attackType").style.color = selectedAttack.color;
+      document.querySelector("#attackPower").innerHTML =
+        "Attack Power: " + selectedAttack.power + "<br>" + "PP: " + playerPokemonDetails.details.attacks[e.currentTarget.innerHTML];
+
       let playerFirst = true;
       if (enemyPokemon.speedStat === playerPokemon.speedStat) {
         let pickedPokemon = Math.round(Math.random());
@@ -488,12 +495,20 @@ function addAttackQuery(id) {
   });
 
   document.querySelector(id).addEventListener("mouseenter", (e) => {
-    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex);
+    let playerPokemonDetails = localPoke.get(currentSelectedPokemonIndex),
+      accuracy;
     const selectedAttack = attacks[e.currentTarget.innerHTML];
     document.querySelector("#attackType").innerHTML = selectedAttack.type;
     document.querySelector("#attackType").style.color = selectedAttack.color;
+
+    if (selectedAttack.accuracy) {
+      accuracy = selectedAttack.accuracy;
+    } else {
+      accuracy = attackEffects[selectedAttack.effect].accuracy;
+    }
+
     document.querySelector("#attackPower").innerHTML =
-      "Attack Power: " + selectedAttack.power + "<br>" + "PP: " + playerPokemonDetails.details.attacks[e.currentTarget.innerHTML];
+      "Attack Power: " + selectedAttack.power + "<br>" + "PP: " + playerPokemonDetails.details.attacks[e.currentTarget.innerHTML] + "<br>" + "Acc: " + accuracy;
   });
 }
 
@@ -520,7 +535,7 @@ function runAttack({ Attack: attack, AttackingPokemon: attackingPokemon, Recipie
         attackEffects[attack.effect].description;
     });
   }
-  if (damageDetails.hasZeroTypeEffect === true) {
+  if (damageDetails.hasZeroTypeEffect === true || damageDetails.miss === true) {
     queue.push(() => {
       document.querySelector("#dialogueBox").style.display = "block";
       document.querySelector("#dialogueBox").innerHTML =

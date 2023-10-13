@@ -89,10 +89,18 @@ function damageCalculator(attackingPokemon, defendingPokemon, attackingMove) {
     hasZeroTypeEffect: false,
     effects: defendingPokemon.effects,
     newEffect: false,
+    miss: false
   };
 
   if (attackingMove.power > 0) {
-    finalDamage = damageMove(attackingPokemon, defendingPokemon, attackingMove);
+    //checks accuracy of damage move
+    let accuracy = Math.floor(Math.random() * 100);
+
+    if (accuracy <= attackingMove.accuracy) {
+      finalDamage = damageMove(attackingPokemon, defendingPokemon, attackingMove);
+    } else {
+      finalDamage.miss = true;
+    }
   }
   if (attackingMove.effect && finalDamage.hasZeroTypeEffect === false) {
     let returnedEffects = this.calculateEffectMove(
