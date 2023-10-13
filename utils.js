@@ -294,3 +294,13 @@ function resize_to_fit(maxLength, object, baseFontSize, minFontSize) {
     object.style.fontSize = `${resizedFontSize}px`;
   }
 }
+
+function updateStats(playerPokemonDetails, newPokemonSpec, id) {
+  let pokemonStats = statCalculator(playerPokemonDetails.details, newPokemonSpec);
+  playerPokemonDetails.details.maxHealth = pokemonStats.newHealth;
+  playerPokemonDetails.details.attackStat = pokemonStats.newAttack;
+  playerPokemonDetails.details.defenseStat = pokemonStats.newDefense;
+  playerPokemonDetails.details.speedStat = pokemonStats.newSpeed;
+  playerPokemonDetails.details.experience = exp;
+  playerPokemonDetails.id = id;
+}

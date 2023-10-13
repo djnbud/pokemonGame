@@ -46,13 +46,8 @@ function evolutionStatUpdate(
     oncomplete
 ) {
     let prevPokemonId = playerPokemonDetails.id;
-    let evolvedPokemonStats = statCalculator(playerPokemonDetails.details, newPokemonSpec);
-    playerPokemonDetails.details.maxHealth = evolvedPokemonStats.newHealth;
-    playerPokemonDetails.details.attackStat = evolvedPokemonStats.newAttack;
-    playerPokemonDetails.details.defenseStat = evolvedPokemonStats.newDefense;
-    playerPokemonDetails.details.speedStat = evolvedPokemonStats.newSpeed;
-    playerPokemonDetails.details.experience = exp;
-    playerPokemonDetails.id = checkEvol;
+    updateStats(playerPokemonDetails, newPokemonSpec, exp, checkEvol)
+
     if (playerPokemonDetails.nickname === prevPokemonId) {
         playerPokemonDetails.nickname = checkEvol;
     }

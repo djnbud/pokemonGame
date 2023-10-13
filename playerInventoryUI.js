@@ -1,4 +1,5 @@
 let previouslySelectedUi = "pokemonPlayerInv";
+let usingItem = false;
 
 function initPlayerInv() {
     document.querySelector("#pokemonPlayerInv").addEventListener("click", (e) => {
@@ -93,7 +94,7 @@ function showItemBag() {
         button.className = "pokemonName";
         document.querySelector("#pokemonBagView").append(button);
         count++;
-
+        addItemUseQuery("#" + button.id);
     });
 
     if (count < 6) {
@@ -171,14 +172,17 @@ function showPokemonBag() {
 
             document.getElementById("pokemonHpContainer" + i).style.width = 80 + "%";
             document.getElementById("pokemonHp" + i).style.width = healthPercentage + "%";
-            let nextLvl = currentPokemon.details.level + 1;    
+            let nextLvl = currentPokemon.details.level + 1;
             let nextLevelNeeded = experienceLevelGrid[nextLvl][monsters[currentPokemon.id].levelingType];
             let expPercentage = (currentPokemon.details.experience / nextLevelNeeded) * 100;
 
             document.getElementById("pokemonExpContainer" + i).style.width = 80 + "%";
             document.getElementById("pokemonExp" + i).style.width = expPercentage + "%";
-
-            addPokemonSwapQuery("#" + button.id);
+            if (!usingItem) {
+                addPokemonSwapQuery("#" + button.id);
+            } else {
+                addPokemonItemQuery("#" + button.id);
+            }
 
         } else {
             createBlankSpace("pokeBagDetailsContainer" + i, "#pokemonBagView");
@@ -195,7 +199,7 @@ function popGridCell(grid, name, classN, value) {
     resize_to_fit(11, gridCell, 13, 8);
 }
 
-function hpExpBars(pokeGridText, index){
+function hpExpBars(pokeGridText, index) {
     //hp
     popGridCell(pokeGridText, "pokeHpText" + index, "pokemonInvDescription", "HP:")
 
@@ -215,7 +219,7 @@ function hpExpBars(pokeGridText, index){
     pokeHp.id = "pokemonHp" + index;
     pokeHp.className = "hpBar";
 
-    
+
     pokeHpContainer.appendChild(pokeHpBg);
     pokeHpContainer.appendChild(pokeHp);
 
@@ -242,7 +246,7 @@ function hpExpBars(pokeGridText, index){
     pokeExp.id = "pokemonExp" + index;
     pokeExp.className = "xpBar";
 
-    
+
     pokeExpContainer.appendChild(pokeExpBg);
     pokeExpContainer.appendChild(pokeExp);
 
@@ -250,7 +254,7 @@ function hpExpBars(pokeGridText, index){
 
     pokeGridText.appendChild(pokeExpGridFit);
 
-    
+
 }
 
 function addPokemonSwapQuery(id) {
@@ -280,5 +284,24 @@ function addPokemonSwapQuery(id) {
                 showPokemonBag();
                 break;
         }
+    });
+}
+
+function addItemUseQuery(id) {
+    document.querySelector(id).addEventListener("click", (e) => {
+        currentPotionType = id;
+        usingItem = true;
+        showPokemonBag();
+    })
+}
+
+function addPokemonItemQuery(id) {
+    document.querySelector(id).addEventListener("click", (e) => {
+        let pokeIndex = parseInt(id.split("#pokemonBag")[1]);
+
+        let splitPotionType = currentPotionType.split("#Items")[1];
+        //check if potion will actually do anything
+        itemOnPokemon(pokeIndex, null, splitPotionType);
+        showItemBag();
     });
 }

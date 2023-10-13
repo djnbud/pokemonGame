@@ -44,6 +44,7 @@ function initInventory() {
   setLocalPokemon(0, startPokemon);
 
   localItems.set("potion", { amount: 5 });
+  localItems.set("rareCandy", { amount: 1 });
 }
 
 function usePokeball(name) {
@@ -84,6 +85,10 @@ function setLocalPokemon(index, details) {
 
 function setItem(id, details) {
   localItems.set(id, details);
+}
+
+function removeItem(id) {
+  localItems.delete(id);
 }
 
 function seenPokemon(id) {

@@ -1,6 +1,8 @@
 function itemOnPokemon(pokeIndex, battlePokemon, potionType) {
     let localPoke = getLocalStoredPokemon(),
-        playerPokemonDetails = localPoke.get(pokeIndex);
+        playerPokemonDetails = localPoke.get(pokeIndex),
+        currentItems = getItems(),
+        itemDetails = currentItems.get(potionType);
 
     switch (items[potionType].type) {
         case "heal":
@@ -12,8 +14,6 @@ function itemOnPokemon(pokeIndex, battlePokemon, potionType) {
 
                 playerPokemonDetails.details.health = newHealth;
                 setLocalPokemon(pokeIndex, playerPokemonDetails);
-                let currentItems = getItems(),
-                    itemDetails = currentItems.get(potionType);
                 itemDetails.amount -= 1;
 
                 setItem(potionType, itemDetails);
@@ -29,5 +29,21 @@ function itemOnPokemon(pokeIndex, battlePokemon, potionType) {
                 }
             }
             break;
+        case "levelUp":
+            if (playerPokemonDetails.details.level < 100 && !battlePokemon) {
+                playerPokemonDetails.details.level += 1;
+                let playerPokemonSpec = monsters[playerPokemonDetails.id];
+                playerPokemonSpec.shiny = playerPokemonDetails.details.shiny;
+                updateStats(playerPokemonDetails, playerPokemonSpec, 0, playerPokemonDetails.details.id);
+                setLocalPokemon(pokeIndex, playerPokemonDetails);
+
+                itemDetails.amount -= 1;
+                setItem(potionType, itemDetails);
+            }
+            break;
+    }
+
+    if (itemDetails.amount === 0) {
+        removeItem(potionType);
     }
 }

@@ -363,17 +363,8 @@ function finishExpGain(exp, levelCount) {
   playerPokemonDetails.details.level = newLevel;
   let playerPokemonSpec = monsters[playerPokemonDetails.id];
   playerPokemonSpec.shiny = playerPokemonDetails.details.shiny;
-  let updatedPlayerPokemonStats = statCalculator(
-    playerPokemonDetails.details,
-    playerPokemonSpec
-  );
 
-  playerPokemonDetails.details.maxHealth = updatedPlayerPokemonStats.newHealth;
-  playerPokemonDetails.details.attackStat = updatedPlayerPokemonStats.newAttack;
-  playerPokemonDetails.details.defenseStat =
-    updatedPlayerPokemonStats.newDefense;
-  playerPokemonDetails.details.speedStat = updatedPlayerPokemonStats.newSpeed;
-  playerPokemonDetails.details.experience = exp;
+  updateStats(playerPokemonDetails, playerPokemonSpec, exp, playerPokemonDetails.details.id);
 
   setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
 
