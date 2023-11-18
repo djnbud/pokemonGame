@@ -1,3 +1,5 @@
+let evolveSpritesBase = [];
+let itemAnimationId;
 function itemOnPokemon(pokeIndex, battlePokemon, potionType) {
     let localPoke = getLocalStoredPokemon(),
         playerPokemonDetails = localPoke.get(pokeIndex),
@@ -34,8 +36,29 @@ function itemOnPokemon(pokeIndex, battlePokemon, potionType) {
                 playerPokemonDetails.details.level += 1;
                 let playerPokemonSpec = monsters[playerPokemonDetails.id];
                 playerPokemonSpec.shiny = playerPokemonDetails.details.shiny;
-                updateStats(playerPokemonDetails, playerPokemonSpec, 0, playerPokemonDetails.details.id);
+                updateStats(playerPokemonDetails, playerPokemonSpec, 0, playerPokemonDetails.id);
                 setLocalPokemon(pokeIndex, playerPokemonDetails);
+
+                //check if pokemon reached to a level stage where it can evolve
+                let checkEvol = checkEvolution(playerPokemonDetails);
+                if (checkEvol !== null) {
+                    animateItem();
+                    c2.clearRect(0, 0, canvas.width, canvas.height);
+                    c2.fillStyle = "white";
+                    c2.fillRect(0, 0, canvas2.width, canvas2.height);
+                    document.querySelector("#dialogueBox").style.display = "block";
+                    document.querySelector("#dialogueBox").style.visibility = "visible";
+                    runEvolution(playerPokemonDetails.nickname, playerPokemonSpec, currentSelectedPokemonIndex, 0, playerPokemonDetails, checkEvol, evolveSpritesBase,
+                        () => {
+                            queue.push(() => {
+                                canvas2.setAttribute("hidden", "hidden");
+                                evolveSpritesBase = [];
+                                document.querySelector("#dialogueBox").style.visibility = "hidden";
+                                cancelAnimationFrame(itemAnimationId);
+                            });
+                        }
+                    );
+                }
 
                 itemDetails.amount -= 1;
                 setItem(potionType, itemDetails);
@@ -45,5 +68,15 @@ function itemOnPokemon(pokeIndex, battlePokemon, potionType) {
 
     if (itemDetails.amount === 0) {
         removeItem(potionType);
+    }
+}
+
+function animateItem() {
+    itemAnimationId = window.requestAnimationFrame(animateItem);
+
+    if (evolveSpritesBase !== undefined) {
+        evolveSpritesBase.forEach((sprite) => {
+            sprite.draw2();
+        });
     }
 }

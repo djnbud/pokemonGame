@@ -364,46 +364,15 @@ function finishExpGain(exp, levelCount) {
   let playerPokemonSpec = monsters[playerPokemonDetails.id];
   playerPokemonSpec.shiny = playerPokemonDetails.details.shiny;
 
-  updateStats(playerPokemonDetails, playerPokemonSpec, exp, playerPokemonDetails.details.id);
+  updateStats(playerPokemonDetails, playerPokemonSpec, exp, playerPokemonDetails.id);
 
   setLocalPokemon(currentSelectedPokemonIndex, playerPokemonDetails);
 
   //check if pokemon reached to a level stage where it can evolve
   let checkEvol = checkEvolution(localPoke.get(currentSelectedPokemonIndex));
   if (checkEvol !== null) {
-    document.querySelector("#dialogueBox").innerHTML =
-      playerPokemon.name + " is Evolving!";
-    waiting = true;
+    runEvolution(playerPokemon.name, playerPokemonSpec, currentSelectedPokemonIndex, exp, playerPokemonDetails, checkEvol, evolveSprites);
 
-    let newPokemonSpec = monsters[checkEvol];
-    playerPokemonSpec.evolve = true;
-    newPokemonSpec.evolve = true;
-    let preEvolution = new EvolveSprite(playerPokemonSpec);
-    evolveSprites.push(preEvolution);
-    let postEvolution = new EvolveSprite(newPokemonSpec);
-    evolveSprites.push(postEvolution);
-
-    canvas2.removeAttribute("hidden");
-    postEvolution.opacity = 0;
-
-    evolutionAnimate(postEvolution, () => {
-      waiting = false;
-      evolveSprites.splice(0, 1);
-      preEvolution = null;
-      postEvolution.opacity = 1;
-      let prevPokemonId = playerPokemonDetails.id;
-      evolutionStatUpdate(
-        playerPokemonDetails,
-        newPokemonSpec,
-        currentSelectedPokemonIndex,
-        exp,
-        checkEvol,
-        () => {
-          document.querySelector("#dialogueBox").innerHTML =
-            prevPokemonId + " evolved into " + checkEvol + "!";
-        }
-      );
-    });
   }
 }
 

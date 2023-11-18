@@ -295,7 +295,7 @@ function resize_to_fit(maxLength, object, baseFontSize, minFontSize) {
   }
 }
 
-function updateStats(playerPokemonDetails, newPokemonSpec, id) {
+function updateStats(playerPokemonDetails, newPokemonSpec, exp, id) {
   let pokemonStats = statCalculator(playerPokemonDetails.details, newPokemonSpec);
   playerPokemonDetails.details.maxHealth = pokemonStats.newHealth;
   playerPokemonDetails.details.attackStat = pokemonStats.newAttack;

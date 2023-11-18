@@ -37,6 +37,43 @@ function evolutionAnimate(postEvolution, oncomplete) {
     });
 }
 
+function runEvolution(pokemonName, playerPokemonSpec, currentSelectedPokemonIndex, exp, playerPokemonDetails, checkEvol, evolveSprites, onComplete) {
+    document.querySelector("#dialogueBox").innerHTML =
+        pokemonName + " is Evolving!";
+    waiting = true;
+
+    let newPokemonSpec = monsters[checkEvol];
+    playerPokemonSpec.evolve = true;
+    newPokemonSpec.evolve = true;
+    let preEvolution = new EvolveSprite(playerPokemonSpec);
+    evolveSprites.push(preEvolution);
+    let postEvolution = new EvolveSprite(newPokemonSpec);
+    evolveSprites.push(postEvolution);
+
+    canvas2.removeAttribute("hidden");
+    postEvolution.opacity = 0;
+
+    evolutionAnimate(postEvolution, () => {
+        waiting = false;
+        evolveSprites.splice(0, 1);
+        preEvolution = null;
+        postEvolution.opacity = 1;
+        let prevPokemonId = playerPokemonDetails.id;
+        evolutionStatUpdate(
+            playerPokemonDetails,
+            newPokemonSpec,
+            currentSelectedPokemonIndex,
+            exp,
+            checkEvol,
+            () => {
+                document.querySelector("#dialogueBox").innerHTML =
+                    prevPokemonId + " evolved into " + checkEvol + "!";
+                onComplete && onComplete();
+            }
+        );
+    });
+}
+
 function evolutionStatUpdate(
     playerPokemonDetails,
     newPokemonSpec,

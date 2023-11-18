@@ -1,3 +1,4 @@
+
 function animate() {
   const animationId = window.requestAnimationFrame(animate);
   renderables.forEach((renderable) => {
@@ -7,6 +8,9 @@ function animate() {
   battleZones.forEach((battleZone) => {
     battleZone.draw();
   });
+
+
+
   let moving = true;
   player.animate = false;
 
