@@ -5,10 +5,10 @@ To run simply navigate to index.html e.g. file:///C:/PokemonGame/index.html
 To add new attacks update data/attacks.js, data.monsters.js and then the function attack in monster.js. The function is how the attack looks
 
 To Do:
-Implement attack effects such as stun, sleep etc SLEEP IMPLEMENTED (NOT GRAPHICALLY)
-Create pokedex version image of each pokemon.
-Update inventory so pokemon show their stats and a image
-Implement Pokedex to track pokemon caught
+Implement attack effects such as stun, sleep etc SLEEP IMPLEMENTED (NOT GRAPHICALLY) DONE
+Create pokedex version image of each pokemon. DONE
+Update inventory so pokemon show their stats and a image DONE
+Implement Pokedex to track pokemon caught DONE
 
 Implement way of going into buildings/new locations. This may be big change to functionality
 Add npcs that have roaming
