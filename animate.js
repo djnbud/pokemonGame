@@ -1,6 +1,12 @@
 
 function animate() {
   const animationId = window.requestAnimationFrame(animate);
+
+  let player = mapRender.player;
+  let renderables = mapRender.renderables;
+  let battleZones = mapRender.battleZones;
+  let movables = mapRender.movables;
+
   renderables.forEach((renderable) => {
     renderable.draw();
   });
